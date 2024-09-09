@@ -8,28 +8,42 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
   const login = () => {
-    navigate('/Menu');
-  }
+    navigate('/reportedit');
+  };
 
   return (
-    <Form onSubmit={login}>
+    <Form onSubmit={login} style={{ maxWidth: '400px', margin: 'auto' }}>
       <FormGroup>
-        <Label for="user_id">ユーザID</Label>
+        <Label for="user_id" style={{ textAlign: 'left' }}>
+          ユーザID
+        </Label>
         <Input
-          type="text" name="user_id" id="user_id" value={user_id} 
-          onChange={(e) => setUserId(e.target.value)} style={{ width: "200px" }}
+          type="text"
+          name="user_id"
+          id="user_id"
+          value={user_id}
+          onChange={(e) => setUserId(e.target.value)}
+          style={{ width: '100%' }}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="password">パスワード</Label>
+        <Label for="password" style={{ textAlign: 'left' }}>
+          パスワード
+        </Label>
         <Input
-          type="password" name="password" id="password" value={password}
-          onChange={(e) => setPassword(e.target.value)} style={{ width: "200px" }}
+          type="password"
+          name="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ width: '100%' }}
         />
       </FormGroup>
-      <Button color="primary">ログイン</Button>
+      <Button color="primary" block style={{ marginTop: '2rem' }}>
+        ログイン
+      </Button>
     </Form>
-  )
-}
+  );
+};
 
 export default LoginForm;
