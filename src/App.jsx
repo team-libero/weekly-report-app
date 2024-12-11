@@ -9,6 +9,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ReportEditPage } from './components/pages/ReportEditPage';
 import { ReportsPage } from './components/pages/ReportsPage';
 import Header from './components/Header';
+import { UserProvider } from './components/contexts/UserContext';
 
 const theme = extendTheme({
   styles: {
@@ -33,48 +34,50 @@ const Layout = ({ children }) => {
 
 const App = () => {
   return (
-    <ChakraProvider theme={theme}>
-      <Routes>
-        <Route path="/" exact element={<LoginPage />} />
-        <Route
-          path="/employeelist"
-          exact
-          element={
-            <Layout>
-              <EmployeeListPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/reportdetail"
-          exact
-          element={
-            <Layout>
-              <ReportDetailPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/reports"
-          exact
-          element={
-            <Layout>
-              <ReportsPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/reportedit"
-          exact
-          element={
-            <Layout>
-              <ReportEditPage />
-            </Layout>
-          }
-        />
-        <Route path="*" element={<NotfoundPage />} />
-      </Routes>
-    </ChakraProvider>
+    <UserProvider>
+      <ChakraProvider theme={theme}>
+        <Routes>
+          <Route path="/" exact element={<LoginPage />} />
+          <Route
+            path="/employeelist"
+            exact
+            element={
+              <Layout>
+                <EmployeeListPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/reportdetail"
+            exact
+            element={
+              <Layout>
+                <ReportDetailPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/reports"
+            exact
+            element={
+              <Layout>
+                <ReportsPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/reportedit"
+            exact
+            element={
+              <Layout>
+                <ReportEditPage />
+              </Layout>
+            }
+          />
+          <Route path="*" element={<NotfoundPage />} />
+        </Routes>
+      </ChakraProvider>
+    </UserProvider>
   );
 };
 
