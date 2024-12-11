@@ -81,7 +81,12 @@ export const ReportEditPage = () => {
       </InputGroup>
 
       <h1
-        style={{ fontSize: '1.5em', fontWeight: 'bold', marginBottom: '10px' }}
+        style={{
+          fontSize: '1.5em',
+          fontWeight: 'bold',
+          marginBottom: '10px',
+          marginTop: '10px',
+        }}
       >
         業務内容
       </h1>
@@ -93,13 +98,19 @@ export const ReportEditPage = () => {
         <InputGroupText>進捗状況</InputGroupText>
         <Input placeholder="" />
       </InputGroup>
-      <br />
-      <h4 style={{ fontWeight: 'bold', marginBottom: '2px' }}>作業内容</h4>
+      <h4
+        style={{ fontWeight: 'bold', marginBottom: '2px', marginTop: '10px' }}
+      >
+        作業内容
+      </h4>
       <InputGroup>
         <Input placeholder="" />
       </InputGroup>
-      <br />
-      <h4 style={{ fontWeight: 'bold', marginBottom: '2px' }}>所感</h4>
+      <h4
+        style={{ fontWeight: 'bold', marginBottom: '2px', marginTop: '10px' }}
+      >
+        所感
+      </h4>
       <InputGroup>
         <Input
           type="textarea"
@@ -108,8 +119,11 @@ export const ReportEditPage = () => {
           style={{ height: '100px' }}
         />
       </InputGroup>
-      <br />
-      <h4 style={{ fontWeight: 'bold', marginBottom: '2px' }}>メンバー状況</h4>
+      <h4
+        style={{ fontWeight: 'bold', marginBottom: '2px', marginTop: '10px' }}
+      >
+        メンバー状況
+      </h4>
       <InputGroup>
         <Input
           type="textarea"

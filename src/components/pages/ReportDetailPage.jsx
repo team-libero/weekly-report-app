@@ -13,7 +13,7 @@ const InfoGroup = ({ title, content }) => (
     borderRadius="8px"
   >
     <Text fontWeight="bold" mb={1}>
-      {title}
+      ■{title}
     </Text>
     <Text ml={4}>{content}</Text>
   </Flex>
@@ -79,6 +79,27 @@ const ReportDetail = () => {
           title="定時"
           content="HH:MM～HH:MM ※金曜日はHH:MM～HH:MMの定時退社日"
         />
+      </Box>
+      <Box p={4} bg="gray.200" borderRadius="md">
+        <Heading size="md" mb={4}>
+          営業に関する情報
+        </Heading>
+
+        <InfoGroup title="情報源" content="上位会社" />
+        <InfoGroup title="情報収集" content="直接問い合わせ" />
+        <InfoGroup
+          title="営業に関する情報"
+          content="飛んだので、補充される予定"
+        />
+      </Box>
+      <Box p={4} bg="gray.200" borderRadius="md">
+        <Heading size="md" mb={4}>
+          業務内容
+        </Heading>
+
+        <InfoGroup title="平均残業時間" content="4時間" />
+        <InfoGroup title="作業内容" content="製造" />
+        <InfoGroup title="最低稼働時間" content="140時間 到達できる" />
       </Box>
     </>
   );
