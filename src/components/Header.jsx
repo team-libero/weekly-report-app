@@ -1,59 +1,26 @@
-import React, { useState, useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Flex, Button, Text, IconButton, VStack } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { UserContext } from './contexts/UserContext';
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [userInfo, setUserInfo] = useState([]);
   const { pathname } = useLocation();
-  const { employeeId, role } = useContext(UserContext);
+  const { employeeId, role, setEmployeeId, setRole } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
-  // 週報一覧押下時API呼び出し
-  const fetchReportsList = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${employeeId}&pageNo=1`
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching reports list:', error);
-    }
+  const handleLogout = () => {
+    setEmployeeId('');
+    setRole('');
+    navigate('/');
   };
 
-  // 週報登録・更新押下時API呼び出し
-  const fetchReportEdit = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_ROOT}/reportedit`
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching report edit:', error);
-    }
-  };
-
-  // 社員一覧押下時API呼び出し
-  const fetchEmployeeList = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_ROOT}/employeelist?employeeId=${employeeId}&role=${role}`
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching employee list:', error);
-    }
-  };
-
-  // URLパラメータ生成
-  // 週報一覧押下
   const getReportsListUrl = () => {
     const params = new URLSearchParams();
     if (employeeId) params.append('employeeId', employeeId);
@@ -61,12 +28,32 @@ const Header = () => {
     return `/reports${params.toString() ? `?${params.toString()}` : ''}`;
   };
 
-  // 社員一覧押下
   const getEmployeeListUrl = () => {
     const params = new URLSearchParams();
     if (role) params.append('role', role);
     return `/employeelist${params.toString() ? `?${params.toString()}` : ''}`;
   };
+
+  useEffect(() => {
+    setEmployeeId('2');
+    const getItems = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_API_ROOT}/header/get?employeeId=${employeeId}`
+        );
+        const data = await res.json();
+        setUserInfo(data);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+    getItems();
+  }, [employeeId]);
+
+  //テスト
+  useEffect(() => {
+    console.log(userInfo);
+  });
 
   const getLinkStyle = (path) => ({
     mx: 5,
@@ -88,13 +75,15 @@ const Header = () => {
   });
 
   return (
-    <Box bg="blue.500" px={4} py={3} color="white">
-      <Flex alignItems="center" justifyContent="space-between">
-        <Link to="/" style={{ textDecoration: 'none' }}>
-          <Text fontSize="lg" fontWeight="bold">
-            週報アプリ
-          </Text>
-        </Link>
+    <Box bg="blue.500" px={4} py={2} color="white">
+      <Flex alignItems="center">
+        <Box flex="0 0 200px">
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <Text fontSize="lg" fontWeight="bold">
+              週報アプリ
+            </Text>
+          </Link>
+        </Box>
 
         <IconButton
           icon={showMenu ? <CloseIcon /> : <HamburgerIcon />}
@@ -106,46 +95,44 @@ const Header = () => {
 
         <Flex
           display={{ base: 'none', md: 'flex' }}
+          flex="1"
+          justifyContent="center"
           alignItems="center"
-          width="auto"
-          mt={{ base: 4, md: 0 }}
         >
-          <Box
-            as={Link}
-            to={getReportsListUrl()}
-            {...getLinkStyle('/reports')}
-            onClick={fetchReportsList}
-          >
+          <Box as={Link} to={getReportsListUrl()} {...getLinkStyle('/reports')}>
             週報一覧
           </Box>
-          <Box
-            as={Link}
-            to={'/reportedit'}
-            {...getLinkStyle('/reportedit')}
-            onClick={fetchReportEdit}
-          >
+          <Box as={Link} to={'/reportedit'} {...getLinkStyle('/reportedit')}>
             週報登録/更新
           </Box>
-
-          <Box
-            as={Link}
-            to={getEmployeeListUrl()}
-            {...getLinkStyle('/employeelist')}
-            onClick={fetchEmployeeList}
-          >
-            社員一覧
-          </Box>
+          {role !== '1' && (
+            <Box
+              as={Link}
+              to={getEmployeeListUrl()}
+              {...getLinkStyle('/employeelist')}
+            >
+              社員一覧
+            </Box>
+          )}
         </Flex>
 
-        <Button
-          colorScheme="teal"
-          variant="solid"
-          display={{ base: 'none', md: 'block' }}
-        >
-          ログアウト
-        </Button>
+        <Box flex display={{ base: 'none', md: 'block' }}>
+          <Flex justifyContent="flex-end" alignItems="center">
+            <Box mr={6}>
+              <div>
+                氏名　　：{userInfo.emp_lname} {userInfo.emp_fname}
+              </div>
+              <div>チーム名：{userInfo.team_name}</div>
+              <div>部署　　：{userInfo.department_name}</div>
+            </Box>
+            <Button colorScheme="teal" variant="solid" onClick={handleLogout}>
+              ログアウト
+            </Button>
+          </Flex>
+        </Box>
       </Flex>
 
+      {/* モバイルメニュー */}
       {showMenu && (
         <Box
           display={{ base: 'block', md: 'none' }}
@@ -165,7 +152,6 @@ const Header = () => {
               p="2"
               _hover={{ bg: 'blue.700', textDecoration: 'none' }}
               _focus={{ bg: 'blue.700', boxShadow: 'none' }}
-              onClick={fetchReportsList}
             >
               週報一覧
             </Box>
@@ -176,7 +162,6 @@ const Header = () => {
               p="2"
               _hover={{ bg: 'blue.700', textDecoration: 'none' }}
               _focus={{ bg: 'blue.700', boxShadow: 'none' }}
-              onClick={fetchReportEdit}
             >
               週報登録/更新
             </Box>
@@ -187,7 +172,6 @@ const Header = () => {
               p="2"
               _hover={{ bg: 'blue.700', textDecoration: 'none' }}
               _focus={{ bg: 'blue.700', boxShadow: 'none' }}
-              onClick={fetchEmployeeList}
             >
               社員一覧
             </Box>
