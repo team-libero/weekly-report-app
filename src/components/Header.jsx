@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Flex, Button, Text, IconButton, VStack } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
@@ -6,15 +6,16 @@ import { UserContext } from './contexts/UserContext';
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [userInfo, setUserInfo] = useState([]);
   const { pathname } = useLocation();
   const {
     employeeId,
     role,
     setEmployeeId,
     setRole,
-    employeeName,
-    setEmployeeName,
+    department_name,
+    team_name,
+    emp_lname,
+    emp_fname,
   } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -40,21 +41,6 @@ const Header = () => {
     if (role) params.append('role', role);
     return `/employeelist${params.toString() ? `?${params.toString()}` : ''}`;
   };
-
-  useEffect(() => {
-    const getItems = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.REACT_APP_API_ROOT}/header/get?employeeId=${employeeId}`
-        );
-        const data = await res.json();
-        setUserInfo(data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
-    getItems();
-  }, [employeeId]);
 
   const getLinkStyle = (path) => ({
     mx: 5,
@@ -113,10 +99,10 @@ const Header = () => {
             <Flex justifyContent="flex-end" alignItems="center">
               <Box mr={6}>
                 <div>
-                  氏名　　：{userInfo.emp_lname} {userInfo.emp_fname}
+                  氏名　　：{emp_lname} {emp_fname}
                 </div>
-                <div>チーム名：{userInfo.team_name}</div>
-                <div>部署　　：{userInfo.department_name}</div>
+                <div>チーム名：{team_name}</div>
+                <div>部署　　：{department_name}</div>
               </Box>
               <Button colorScheme="teal" variant="solid" onClick={handleLogout}>
                 ログアウト

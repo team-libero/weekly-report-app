@@ -17,6 +17,11 @@ const LoginPage = () => {
           週報システムログイン
         </Heading>
         <LoginForm />
+        <u>
+          <a href="https://www.google.com/">
+            IDやパスワードを忘れてしまった場合
+          </a>
+        </u>
       </Box>
     </Flex>
   );

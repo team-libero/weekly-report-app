@@ -19,14 +19,14 @@ import {
 } from '@chakra-ui/react';
 import { WorkStatusSectionPage } from '../reportedit/WorkStatusSection';
 import { WorkContentSection } from '../reportedit/WorkContentSection';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEmployeeData } from '../../hooks/useEmployeeData';
 
 export const ReportEditPage = () => {
   const [searchParams] = useSearchParams();
   const reportId = searchParams.get('reportId');
 
-  const { employeeId, employeeName } = useContext(UserContext);
+  const { employeeId, emp_lname, emp_fname } = useContext(UserContext);
   const {
     handleCopy,
     handleChange,
@@ -39,6 +39,7 @@ export const ReportEditPage = () => {
   const [isEdit, setIsEdit] = useState(false);
   const { teamLeaders, salesEmployees } = useEmployeeData();
   const navigate = useNavigate();
+  const employeeName = emp_lname + ' ' + emp_fname;
 
   useEffect(() => {
     // ログイン確認
