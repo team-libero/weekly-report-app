@@ -8,7 +8,14 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
   const { pathname } = useLocation();
-  const { employeeId, role, setEmployeeId, setRole } = useContext(UserContext);
+  const {
+    employeeId,
+    role,
+    setEmployeeId,
+    setRole,
+    employeeName,
+    setEmployeeName,
+  } = useContext(UserContext);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -35,7 +42,6 @@ const Header = () => {
   };
 
   useEffect(() => {
-    setEmployeeId('2');
     const getItems = async () => {
       try {
         const res = await fetch(

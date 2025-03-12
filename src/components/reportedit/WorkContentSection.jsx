@@ -17,34 +17,41 @@ import { InfoIcon } from 'lucide-react';
 
 export const WorkContentSection = ({ formData, onChange }) => {
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack spacing={6} align="stretch">
       <Box>
         <FormLabel fontWeight="bold">作業内容</FormLabel>
         <Textarea
           name="workContent"
-          // value={formData.workContent}
+          value={formData.workContent}
           onChange={onChange}
           height="24"
         />
       </Box>
 
-      <Flex gap={4}>
-        <Box flex={3}>
-          <FormLabel fontWeight="bold">難易度</FormLabel>
+      <Flex gap={4} wrap="wrap" justifyContent="flex-start">
+        <Flex alignItems="center" gap={2} minW="200px">
+          <FormLabel fontWeight="bold" mb={0} whiteSpace="nowrap">
+            難易度
+          </FormLabel>
           <Input
             name="difficulty"
-            // value={formData.difficulty}
             onChange={onChange}
+            w="100px"
+            value={formData.difficulty}
           />
-        </Box>
-        <Box flex={3}>
-          <FormLabel fontWeight="bold">スケジュール感</FormLabel>
+        </Flex>
+
+        <Flex alignItems="center" gap={2} minW="200px">
+          <FormLabel fontWeight="bold" mb={0} whiteSpace="nowrap">
+            スケジュール感
+          </FormLabel>
           <Input
             name="schedule"
-            // value={formData.schedule}
             onChange={onChange}
+            w="100px"
+            value={formData.schedule}
           />
-        </Box>
+        </Flex>
       </Flex>
 
       <Flex alignItems="center" gap={1} color="red.500" mb={2}>
@@ -55,7 +62,7 @@ export const WorkContentSection = ({ formData, onChange }) => {
               style={{ height: '16px', width: '16px', cursor: 'pointer' }}
             />
           </PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent w="500px">
             <PopoverBody>
               <VStack align="stretch" spacing={2} color="black">
                 <Text>
@@ -105,7 +112,7 @@ export const WorkContentSection = ({ formData, onChange }) => {
         </FormLabel>
         <Textarea
           name="failure"
-          // value={formData.failure}
+          value={formData.failure}
           onChange={onChange}
           height="24"
         />
@@ -117,7 +124,7 @@ export const WorkContentSection = ({ formData, onChange }) => {
         </FormLabel>
         <Textarea
           name="impression"
-          // value={formData.impression}
+          value={formData.impression}
           onChange={onChange}
           height="24"
         />
@@ -127,7 +134,7 @@ export const WorkContentSection = ({ formData, onChange }) => {
         <FormLabel fontWeight="bold">現場で従事しているACT社員の状況</FormLabel>
         <Textarea
           name="otherEmployees"
-          // value={formData.otherEmployees}
+          value={formData.otherEmployees}
           onChange={onChange}
           height="24"
         />

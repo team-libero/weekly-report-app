@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
 
 const LoginForm = () => {
   const [user_id, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const { employeeId, employeeName, setEmployeeId, setEmployeeName } =
+    useContext(UserContext);
 
   const navigate = useNavigate();
   const login = () => {
     navigate('/reportedit');
   };
+
+  // 仮
+  useEffect(() => {
+    setEmployeeId('2');
+    setEmployeeName('花岡 壮之介');
+  });
 
   return (
     <Form onSubmit={login} style={{ maxWidth: '400px', margin: 'auto' }}>

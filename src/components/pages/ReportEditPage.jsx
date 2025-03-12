@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useWeeklyReport } from '../../hooks/useWeeklyReport';
 import { UserContext } from '../contexts/UserContext';
 import { Button } from 'reactstrap';
@@ -10,7 +10,6 @@ import {
   Text,
   Input,
   FormLabel,
-  Stack,
   Grid,
   VStack,
   Select,
@@ -20,24 +19,49 @@ import {
 } from '@chakra-ui/react';
 import { WorkStatusSectionPage } from '../reportedit/WorkStatusSection';
 import { WorkContentSection } from '../reportedit/WorkContentSection';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 export const ReportEditPage = () => {
-  const { employeeId } = useContext(UserContext);
-  const { handleCopy, handleChange, handleSubmit, formData, setFormData } =
-    useWeeklyReport(employeeId);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchParams] = useSearchParams();
+  const reportId = searchParams.get('reportId');
+
+  const { employeeId, employeeName } = useContext(UserContext);
+  const [teamLeaders, setTeamLeaders] = useState([]);
+  const [salesEmployees, setSalesEmployees] = useState([]);
+  const {
+    handleCopy,
+    handleChange,
+    handleSubmit,
+    handleClear,
+    formData,
+    setFormData,
+    isSubmitting,
+  } = useWeeklyReport(employeeId);
   const [isEdit, setIsEdit] = useState(false);
 
-  // 仮
-  const employee = {
-    lastName: '',
-    firstName: '',
-  };
-  const teamLeaders = [{ id: '1', name: '所属長', teamName: 'リベロ' }];
-  const salesEmployees = [{ id: '1', name: '営業' }];
+  useEffect(() => {
+    const getItems = async () => {
+      try {
+        const resLeaders = await fetch(
+          `${process.env.REACT_APP_API_ROOT}/employee/leaders`
+        );
+        const resSales = await fetch(
+          `${process.env.REACT_APP_API_ROOT}/employee/sales`
+        );
+        const leaderData = await resLeaders.json();
+        const salesData = await resSales.json();
+
+        setTeamLeaders(leaderData);
+        setSalesEmployees(salesData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+    getItems();
+  }, []);
 
   return (
-    <div className="container mx-auto pb-8">
+    <div className="container mx-auto pl-16 pr-16 pb-8">
       {/* TOP */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex gap-4 ml-auto mt-4">
@@ -50,7 +74,7 @@ export const ReportEditPage = () => {
           </Button>
           <Button
             className="bg-blue-600 hover:bg-blue-700"
-            onClick={handleCopy}
+            onClick={handleClear}
             disabled={isSubmitting}
           >
             クリア
@@ -71,7 +95,7 @@ export const ReportEditPage = () => {
               <Input
                 type="date"
                 name="startDate"
-                // value={formData.startDate}
+                value={formData.startDate}
                 onChange={handleChange}
                 width="40"
               />
@@ -84,7 +108,7 @@ export const ReportEditPage = () => {
               <Input
                 type="date"
                 name="endDate"
-                // value={formData.endDate}
+                value={formData.endDate}
                 onChange={handleChange}
                 width="40"
               />
@@ -102,22 +126,22 @@ export const ReportEditPage = () => {
           <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={4}>
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">氏名</FormLabel>
-              <Box p={2}>
-                {employee ? `${employee.lastName} ${employee.firstName}` : ''}
-              </Box>
+              <Box p={2}>{employeeName ? employeeName : ''}</Box>
             </VStack>
 
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">所属チームLD名</FormLabel>
               <Select
                 name="selectedTeamLeader"
-                // value={formData.selectedTeamLeader}
+                value={formData.selectedTeamLeader}
                 onChange={handleChange}
               >
                 <option value="">選択してください</option>
                 {teamLeaders.map((leader) => (
-                  <option key={leader.id} value={leader.id}>
-                    {`${leader.name} (${leader.teamName})`}
+                  <option key={leader.emp_id} value={leader.emp_id}>
+                    {`${leader.emp_lname + ' ' + leader.emp_fname} (${
+                      leader.team_name
+                    })`}
                   </option>
                 ))}
               </Select>
@@ -127,13 +151,13 @@ export const ReportEditPage = () => {
               <FormLabel fontWeight="bold">自社担当営業</FormLabel>
               <Select
                 name="selectedSalesEmployee"
-                // value={formData.selectedSalesEmployee}
+                value={formData.selectedSalesEmployee}
                 onChange={handleChange}
               >
                 <option value="">選択してください</option>
                 {salesEmployees.map((sales) => (
-                  <option key={sales.id} value={sales.id}>
-                    {`${sales.name}`}
+                  <option key={sales.emp_id} value={sales.emp_id}>
+                    {`${sales.emp_lname + ' ' + sales.emp_fname}`}
                   </option>
                 ))}
               </Select>
@@ -143,13 +167,13 @@ export const ReportEditPage = () => {
           <Grid
             templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
             gap={4}
-            mt={2}
+            mt={4}
           >
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">ユーザー会社名</FormLabel>
               <Input
                 name="userCompanyName"
-                // value={formData.userCompanyName}
+                value={formData.userCompanyName}
                 onChange={handleChange}
                 placeholder=""
               />
@@ -159,7 +183,7 @@ export const ReportEditPage = () => {
               <FormLabel fontWeight="bold">元請会社名</FormLabel>
               <Input
                 name="primeContractorName"
-                // value={formData.primeContractorName}
+                value={formData.primeContractorName}
                 onChange={handleChange}
                 placeholder=""
               />
@@ -169,13 +193,13 @@ export const ReportEditPage = () => {
           <Grid
             templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
             gap={4}
-            mt={2}
+            mt={4}
           >
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">現場住所</FormLabel>
               <Input
                 name="onsiteAddress"
-                // value={formData.onsiteAddress}
+                value={formData.onsiteAddress}
                 onChange={handleChange}
                 placeholder="東京都新宿区新宿1-11-5 不二越ビル4F"
               />
@@ -185,13 +209,13 @@ export const ReportEditPage = () => {
           <Grid
             templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
             gap={4}
-            mt={2}
+            mt={4}
           >
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">定時</FormLabel>
               <Input
                 name="fixedTime"
-                // value={formData.fixedTime}
+                value={formData.fixedTime}
                 onChange={handleChange}
                 placeholder="HH:MM～HH:MM ※金曜日はHH:MM～HH:MMの定時退社日"
               />
@@ -220,7 +244,7 @@ export const ReportEditPage = () => {
               </FormLabel>
               <Input
                 name="sourceOfSalesInfo"
-                // value={formData.sourceOfSalesInfo}
+                value={formData.sourceOfSalesInfo}
                 onChange={handleChange}
                 placeholder=""
               />
@@ -233,7 +257,7 @@ export const ReportEditPage = () => {
               </FormLabel>
               <Input
                 name="howToCollectSalesInfo"
-                // value={formData.howToCollectSalesInfo}
+                value={formData.howToCollectSalesInfo}
                 onChange={handleChange}
                 placeholder=""
               />
@@ -243,7 +267,7 @@ export const ReportEditPage = () => {
               <FormLabel fontWeight="bold">営業に関する情報</FormLabel>
               <Textarea
                 name="salesInfo"
-                // value={formData.salesInfo}
+                value={formData.salesInfo}
                 onChange={handleChange}
                 placeholder=""
                 height="24"
@@ -259,15 +283,12 @@ export const ReportEditPage = () => {
           <Text fontSize="2xl" fontWeight="bold" mb={4}>
             業務内容
           </Text>
-          <VStack spacing={8} align="stretch">
+          <VStack spacing={6} align="stretch">
             <WorkStatusSectionPage
-              // formData={formData}
+              formData={formData}
               onChange={handleChange}
             />
-            <WorkContentSection
-              // formData={formData}
-              onChange={handleChange}
-            />
+            <WorkContentSection formData={formData} onChange={handleChange} />
           </VStack>
         </CardBody>
       </Card>
@@ -275,11 +296,9 @@ export const ReportEditPage = () => {
       <Flex justify="center" mt={6}>
         <Button
           size="lg"
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 px-32 py-8"
           onClick={handleSubmit}
           isDisabled={isSubmitting}
-          px={32}
-          py={8}
         >
           {isSubmitting ? (
             <Text>送信中...</Text>
