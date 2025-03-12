@@ -8,7 +8,15 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [input_error, setInputErrorState] = useState(false);
   //const [emp_id, setEmpId] = useState('');
-  const { setEmployeeId, setRole } = useContext(UserContext);
+  const {
+    setEmployeeId,
+    setRole,
+    setDepartmentId,
+    setDepartmentName,
+    setTeamName,
+    setEmpLname,
+    setEmpFname,
+  } = useContext(UserContext);
   const navigate = useNavigate();
 
   // const login = () => {
@@ -34,6 +42,11 @@ const LoginForm = () => {
           // 取得した社員ID、役職をセッションに保持
           setEmployeeId(items[0].emp_id);
           setRole(items[0].role);
+          setDepartmentId(items[0].department_id);
+          setDepartmentName(items[0].department_name);
+          setTeamName(items[0].team_name);
+          setEmpLname(items[0].emp_lname);
+          setEmpFname(items[0].emp_fname);
 
           console.log(items[0].department_id);
           if (items[0].department_id === '1') {
