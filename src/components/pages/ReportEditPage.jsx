@@ -19,15 +19,14 @@ import {
 } from '@chakra-ui/react';
 import { WorkStatusSectionPage } from '../reportedit/WorkStatusSection';
 import { WorkContentSection } from '../reportedit/WorkContentSection';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEmployeeData } from '../../hooks/useEmployeeData';
 
 export const ReportEditPage = () => {
   const [searchParams] = useSearchParams();
   const reportId = searchParams.get('reportId');
 
   const { employeeId, employeeName } = useContext(UserContext);
-  const [teamLeaders, setTeamLeaders] = useState([]);
-  const [salesEmployees, setSalesEmployees] = useState([]);
   const {
     handleCopy,
     handleChange,
@@ -38,27 +37,67 @@ export const ReportEditPage = () => {
     isSubmitting,
   } = useWeeklyReport(employeeId);
   const [isEdit, setIsEdit] = useState(false);
+  const { teamLeaders, salesEmployees } = useEmployeeData();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getItems = async () => {
-      try {
-        const resLeaders = await fetch(
-          `${process.env.REACT_APP_API_ROOT}/employee/leaders`
-        );
-        const resSales = await fetch(
-          `${process.env.REACT_APP_API_ROOT}/employee/sales`
-        );
-        const leaderData = await resLeaders.json();
-        const salesData = await resSales.json();
+    // ログイン確認
+    if (!employeeId) {
+      console.log('Required params missing:', { employeeId });
+      navigate('/error');
+      return;
+    }
 
-        setTeamLeaders(leaderData);
-        setSalesEmployees(salesData);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
+    const fetchData = async () => {
+      // レポートIDがパラメータに存在する場合、該当の週報データ情報をフォームの初期値に設定
+      if (reportId) {
+        // 登録・編集 判定用フラグ
+        setIsEdit(true);
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_API_ROOT}/report/reportDetail/${reportId}`
+          );
+          const data = await response.json();
+
+          // 所有者チェック
+          if (data.employeeId !== employeeId) {
+            console.error('アクセス権限がありません');
+            navigate('/error');
+            return;
+          }
+
+          setFormData({
+            startDate: data.periodStartDate,
+            endDate: data.periodEndDate,
+            selectedTeamLeader: data.leaderEmployeeId,
+            selectedSalesEmployee: data.salesEmployeeId,
+            userCompanyName: data.userCompanyName,
+            primeContractorName: data.primeContractorName,
+            onsiteAddress: data.onsiteAddress,
+            fixedTime: data.fixedTime,
+            sourceOfSalesInfo: data.sourceOfSalesInfo,
+            howToCollectSalesInfo: data.howToCollectSalesInfo,
+            salesInfo: data.salesInfo,
+            averageOvertime: data.averageOvertime,
+            workContent: data.workContent,
+            minimumWorkTime: data.minimumWorkTime,
+            reachability: data.reachability,
+            progress: data.progress,
+            condition: data.physicalCondition,
+            relationship: data.relationship,
+            failure: data.failurePointedOut,
+            impression: data.impression,
+            difficulty: data.difficultyLevel,
+            schedule: data.senseOfSchedule,
+            otherEmployees: data.situationOfOtherEmployees,
+          });
+        } catch (error) {
+          console.error('Failed to fetch report data:', error);
+        }
       }
     };
-    getItems();
-  }, []);
+    fetchData();
+  }, [reportId]);
 
   return (
     <div className="container mx-auto pl-16 pr-16 pb-8">
@@ -296,7 +335,7 @@ export const ReportEditPage = () => {
       <Flex justify="center" mt={6}>
         <Button
           size="lg"
-          className="bg-blue-600 hover:bg-blue-700 px-32 py-8"
+          className="bg-blue-600 hover:bg-blue-700 px-32 py-6"
           onClick={handleSubmit}
           isDisabled={isSubmitting}
         >

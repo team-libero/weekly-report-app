@@ -14,7 +14,7 @@ const LoginForm = () => {
     navigate('/reportedit');
   };
 
-  // 仮
+  // ログイン実装前動確用 いつか消す
   useEffect(() => {
     setEmployeeId('2');
     setEmployeeName('花岡 壮之介');

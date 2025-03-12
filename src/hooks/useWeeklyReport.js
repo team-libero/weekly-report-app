@@ -30,7 +30,7 @@ export const useWeeklyReport = (employeeId) => {
   const handleCopy = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_ROOT}/report/copy/${employeeId}`
+        `${process.env.REACT_APP_API_ROOT}/reports/reportRegister/copy?employeeId=${employeeId}`
       );
 
       if (!response.ok) throw new Error('Failed to fetch copy');
@@ -44,28 +44,29 @@ export const useWeeklyReport = (employeeId) => {
 
       setFormData({
         ...formData,
-        selectedTeamLeader: latestReport.leaderEmployeeId || '',
-        selectedSalesEmployee: latestReport.salesEmployeeId || '',
-        userCompanyName: latestReport.userCompanyName || '',
-        primeContractorName: latestReport.primeContractorName || '',
-        onsiteAddress: latestReport.onsiteAddress || '',
-        fixedTime: latestReport.fixedTime || '',
-        sourceOfSalesInfo: latestReport.sourceOfSalesInfo || '',
-        howToCollectSalesInfo: latestReport.howToCollectSalesInfo || '',
-        salesInfo: latestReport.salesInfo || '',
-        averageOvertime: latestReport.averageOvertime || '',
-        minimumWorkTime: latestReport.minimumWorkTime || '',
+        selectedTeamLeader: latestReport.leader_emp_id || '',
+        selectedSalesEmployee: latestReport.sales_emp_id || '',
+        userCompanyName: latestReport.user_company_name || '',
+        primeContractorName: latestReport.prime_contractor_name || '',
+        onsiteAddress: latestReport.onsite_address || '',
+        fixedTime: latestReport.fixed_time || '',
+        sourceOfSalesInfo: latestReport.source_of_sales_info || '',
+        howToCollectSalesInfo: latestReport.how_to_collect_sales_info || '',
+        salesInfo: latestReport.sales_info || '',
+        averageOvertime: latestReport.avg_overtime || '',
+        minimumWorkTime: latestReport.minimun_work_time || '',
         reachability: latestReport.reachability || '',
         progress: latestReport.progress || '',
-        condition: latestReport.physicalCondition || '',
+        condition: latestReport.physical_condition || '',
         relationship: latestReport.relationship || '',
-        workContent: latestReport.workContent || '',
-        difficulty: latestReport.difficultyLevel || '',
-        schedule: latestReport.senseOfSchedule || '',
-        failure: latestReport.failurePointedOut || '',
+        workContent: latestReport.work_content || '',
+        difficulty: latestReport.difficulty_level || '',
+        schedule: latestReport.sence_of_schedule || '',
+        failure: latestReport.failure_pointed_out || '',
         impression: latestReport.impression || '',
-        otherEmployees: latestReport.situationOfOtherEmployees || '',
+        otherEmployees: latestReport.situation_of_other_employees || '',
       });
+      console.log(formData);
     } catch (error) {
       console.error('Error fetching latest report', error);
       alert('前回の内容の取得に失敗しました。');
@@ -117,8 +118,8 @@ export const useWeeklyReport = (employeeId) => {
     setIsSubmitting(true);
     try {
       const url = reportId
-        ? `${process.env.REACT_APP_API_ROOT}/report/update/${reportId}`
-        : `${process.env.REACT_APP_API_ROOT}/report/register`;
+        ? `${process.env.REACT_APP_API_ROOT}/reports/reportRegister?${reportId}`
+        : `${process.env.REACT_APP_API_ROOT}/reports/reportRegister`;
       console.log(url);
 
       const response = await fetch(url, {

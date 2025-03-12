@@ -56,11 +56,6 @@ const Header = () => {
     getItems();
   }, [employeeId]);
 
-  //テスト
-  useEffect(() => {
-    console.log(userInfo);
-  });
-
   const getLinkStyle = (path) => ({
     mx: 5,
     display: 'block',
@@ -82,7 +77,7 @@ const Header = () => {
 
   return (
     <Box bg="blue.500" px={4} py={2} color="white">
-      <Flex alignItems="center">
+      <Flex alignItems="center" justifyContent="space-between">
         <Box flex="0 0 200px">
           <Link to="/" style={{ textDecoration: 'none' }}>
             <Text fontSize="lg" fontWeight="bold">
@@ -91,17 +86,8 @@ const Header = () => {
           </Link>
         </Box>
 
-        <IconButton
-          icon={showMenu ? <CloseIcon /> : <HamburgerIcon />}
-          variant="outline"
-          aria-label="Toggle Navigation"
-          display={{ base: 'block', md: 'none' }}
-          onClick={toggleMenu}
-        />
-
         <Flex
           display={{ base: 'none', md: 'flex' }}
-          flex="1"
           justifyContent="center"
           alignItems="center"
         >
@@ -122,20 +108,31 @@ const Header = () => {
           )}
         </Flex>
 
-        <Box flex display={{ base: 'none', md: 'block' }}>
-          <Flex justifyContent="flex-end" alignItems="center">
-            <Box mr={6}>
-              <div>
-                氏名　　：{userInfo.emp_lname} {userInfo.emp_fname}
-              </div>
-              <div>チーム名：{userInfo.team_name}</div>
-              <div>部署　　：{userInfo.department_name}</div>
-            </Box>
-            <Button colorScheme="teal" variant="solid" onClick={handleLogout}>
-              ログアウト
-            </Button>
-          </Flex>
-        </Box>
+        <Flex alignItems="center">
+          <Box display={{ base: 'none', md: 'block' }}>
+            <Flex justifyContent="flex-end" alignItems="center">
+              <Box mr={6}>
+                <div>
+                  氏名　　：{userInfo.emp_lname} {userInfo.emp_fname}
+                </div>
+                <div>チーム名：{userInfo.team_name}</div>
+                <div>部署　　：{userInfo.department_name}</div>
+              </Box>
+              <Button colorScheme="teal" variant="solid" onClick={handleLogout}>
+                ログアウト
+              </Button>
+            </Flex>
+          </Box>
+
+          <IconButton
+            icon={showMenu ? <CloseIcon /> : <HamburgerIcon />}
+            variant="outline"
+            aria-label="Toggle Navigation"
+            display={{ base: 'block', md: 'none' }}
+            onClick={toggleMenu}
+            ml={{ base: 2, md: 0 }}
+          />
+        </Flex>
       </Flex>
 
       {/* モバイルメニュー */}
@@ -171,17 +168,24 @@ const Header = () => {
             >
               週報登録/更新
             </Box>
-            <Box
-              as={Link}
-              to={getEmployeeListUrl()}
-              w="100%"
-              p="2"
-              _hover={{ bg: 'blue.700', textDecoration: 'none' }}
-              _focus={{ bg: 'blue.700', boxShadow: 'none' }}
+            {role !== '1' && (
+              <Box
+                as={Link}
+                to={getEmployeeListUrl()}
+                w="100%"
+                p="2"
+                _hover={{ bg: 'blue.700', textDecoration: 'none' }}
+                _focus={{ bg: 'blue.700', boxShadow: 'none' }}
+              >
+                社員一覧
+              </Box>
+            )}
+            <Button
+              colorScheme="teal"
+              variant="solid"
+              onClick={handleLogout}
+              w="auto"
             >
-              社員一覧
-            </Box>
-            <Button colorScheme="teal" variant="solid" w="20%">
               ログアウト
             </Button>
           </VStack>
