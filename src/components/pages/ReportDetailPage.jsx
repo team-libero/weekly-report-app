@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { IoReturnDownBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+//import styled from 'styled-components';
 
 const InfoGroup = ({ title, content }) => (
   <Flex
@@ -40,11 +40,38 @@ const styledEditButtonStyles = {
 };
 
 const ReportDetail = () => {
+  const [input_error, setInputErrorState] = useState(false);
+
   const navigate = useNavigate();
 
   const onClickReturn = () => {
     navigate(-1);
   };
+
+  fetch(`${process.env.REACT_APP_API_ROOT}/reportDetail/getDetailData`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      emp_id: emp_id,
+      weekly_report_id: weekly_report_id,
+    }),
+  })
+    .then((response) => response.json())
+    .then((items) => {
+      console.log(items);
+      if (items.length > 0 && !items.dataExists) {
+        console.log(items[0]);
+      } else {
+        // 画面遷移の抑制
+        //e.preventDefault();
+        console.log('dataExists');
+        setInputErrorState(true);
+      }
+    })
+    .catch((err) => console.log(err));
+
   return (
     <>
       <Flex justifyContent="space-between" alignItems="center" p={4}>
