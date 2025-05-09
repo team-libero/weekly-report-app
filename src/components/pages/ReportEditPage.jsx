@@ -35,6 +35,7 @@ export const ReportEditPage = () => {
     formData,
     setFormData,
     isSubmitting,
+    errors,
   } = useWeeklyReport(employeeId);
   const [isEdit, setIsEdit] = useState(false);
   const { teamLeaders, salesEmployees } = useEmployeeData();
@@ -56,7 +57,7 @@ export const ReportEditPage = () => {
         setIsEdit(true);
         try {
           const response = await fetch(
-            `${process.env.REACT_APP_API_ROOT}/report/reportDetail/${reportId}`
+            `${process.env.REACT_APP_API_ROOT}/reports/reportDetail/${reportId}`
           );
           const data = await response.json();
 
@@ -132,26 +133,42 @@ export const ReportEditPage = () => {
               <FormLabel fontWeight="bold" whiteSpace="nowrap" mb={0}>
                 開始日
               </FormLabel>
-              <Input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                width="40"
-              />
+              <Box>
+                <Input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  width="40"
+                  isInvalid={!!errors?.startDate}
+                />
+                {errors?.startDate && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.startDate}
+                  </Text>
+                )}
+              </Box>
             </Flex>
             <Text fontSize="lg">～</Text>
             <Flex alignItems="center" gap={2}>
               <FormLabel fontWeight="bold" whiteSpace="nowrap" mb={0}>
                 終了日
               </FormLabel>
-              <Input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                width="40"
-              />
+              <Box>
+                <Input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  width="40"
+                  isInvalid={!!errors?.endDate}
+                />
+                {errors?.endDate && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.endDate}
+                  </Text>
+                )}
+              </Box>
             </Flex>
           </Flex>
         </CardBody>
@@ -171,36 +188,52 @@ export const ReportEditPage = () => {
 
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">所属チームLD名</FormLabel>
-              <Select
-                name="selectedTeamLeader"
-                value={formData.selectedTeamLeader}
-                onChange={handleChange}
-              >
-                <option value="">選択してください</option>
-                {teamLeaders.map((leader) => (
-                  <option key={leader.emp_id} value={leader.emp_id}>
-                    {`${leader.emp_lname + ' ' + leader.emp_fname} (${
-                      leader.team_name
-                    })`}
-                  </option>
-                ))}
-              </Select>
+              <Box>
+                <Select
+                  name="selectedTeamLeader"
+                  value={formData.selectedTeamLeader}
+                  onChange={handleChange}
+                  isInvalid={!!errors?.selectedTeamLeader}
+                >
+                  <option value="">選択してください</option>
+                  {teamLeaders.map((leader) => (
+                    <option key={leader.emp_id} value={leader.emp_id}>
+                      {`${leader.emp_lname + ' ' + leader.emp_fname} (${
+                        leader.team_name
+                      })`}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.selectedTeamLeader && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.selectedTeamLeader}
+                  </Text>
+                )}
+              </Box>
             </VStack>
 
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">自社担当営業</FormLabel>
-              <Select
-                name="selectedSalesEmployee"
-                value={formData.selectedSalesEmployee}
-                onChange={handleChange}
-              >
-                <option value="">選択してください</option>
-                {salesEmployees.map((sales) => (
-                  <option key={sales.emp_id} value={sales.emp_id}>
-                    {`${sales.emp_lname + ' ' + sales.emp_fname}`}
-                  </option>
-                ))}
-              </Select>
+              <Box>
+                <Select
+                  name="selectedSalesEmployee"
+                  value={formData.selectedSalesEmployee}
+                  onChange={handleChange}
+                  isInvalid={!!errors?.selectedSalesEmployee}
+                >
+                  <option value="">選択してください</option>
+                  {salesEmployees.map((sales) => (
+                    <option key={sales.emp_id} value={sales.emp_id}>
+                      {`${sales.emp_lname + ' ' + sales.emp_fname}`}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.selectedSalesEmployee && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.selectedSalesEmployee}
+                  </Text>
+                )}
+              </Box>
             </VStack>
           </Grid>
 
@@ -211,22 +244,38 @@ export const ReportEditPage = () => {
           >
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">ユーザー会社名</FormLabel>
-              <Input
-                name="userCompanyName"
-                value={formData.userCompanyName}
-                onChange={handleChange}
-                placeholder=""
-              />
+              <Box>
+                <Input
+                  name="userCompanyName"
+                  value={formData.userCompanyName}
+                  onChange={handleChange}
+                  placeholder=""
+                  isInvalid={!!errors?.userCompanyName}
+                />
+                {errors?.userCompanyName && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.userCompanyName}
+                  </Text>
+                )}
+              </Box>
             </VStack>
 
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">元請会社名</FormLabel>
-              <Input
-                name="primeContractorName"
-                value={formData.primeContractorName}
-                onChange={handleChange}
-                placeholder=""
-              />
+              <Box>
+                <Input
+                  name="primeContractorName"
+                  value={formData.primeContractorName}
+                  onChange={handleChange}
+                  placeholder=""
+                  isInvalid={!!errors?.primeContractorName}
+                />
+                {errors?.primeContractorName && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.primeContractorName}
+                  </Text>
+                )}
+              </Box>
             </VStack>
           </Grid>
 
@@ -237,12 +286,20 @@ export const ReportEditPage = () => {
           >
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">現場住所</FormLabel>
-              <Input
-                name="onsiteAddress"
-                value={formData.onsiteAddress}
-                onChange={handleChange}
-                placeholder="東京都新宿区新宿1-11-5 不二越ビル4F"
-              />
+              <Box>
+                <Input
+                  name="onsiteAddress"
+                  value={formData.onsiteAddress}
+                  onChange={handleChange}
+                  placeholder="東京都新宿区新宿1-11-5 不二越ビル4F"
+                  isInvalid={!!errors?.onsiteAddress}
+                />
+                {errors?.onsiteAddress && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.onsiteAddress}
+                  </Text>
+                )}
+              </Box>
             </VStack>
           </Grid>
 
@@ -258,7 +315,13 @@ export const ReportEditPage = () => {
                 value={formData.fixedTime}
                 onChange={handleChange}
                 placeholder="HH:MM～HH:MM ※金曜日はHH:MM～HH:MMの定時退社日"
+                isInvalid={!!errors?.fixedTime}
               />
+              {errors?.fixedTime && (
+                <Text color="red.500" fontSize="sm" mt={1}>
+                  {errors.fixedTime}
+                </Text>
+              )}
             </VStack>
           </Grid>
         </CardBody>
@@ -282,12 +345,20 @@ export const ReportEditPage = () => {
               <FormLabel fontWeight="bold">
                 情報源（上位会社 ・ 協力会社 ・ ACT社員 ・ その他）
               </FormLabel>
-              <Input
-                name="sourceOfSalesInfo"
-                value={formData.sourceOfSalesInfo}
-                onChange={handleChange}
-                placeholder=""
-              />
+              <Box>
+                <Input
+                  name="sourceOfSalesInfo"
+                  value={formData.sourceOfSalesInfo}
+                  onChange={handleChange}
+                  placeholder=""
+                  isInvalid={!!errors?.sourceOfSalesInfo}
+                />
+                {errors?.sourceOfSalesInfo && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.sourceOfSalesInfo}
+                  </Text>
+                )}
+              </Box>
             </VStack>
 
             <VStack align="stretch" spacing={2}>
@@ -295,24 +366,40 @@ export const ReportEditPage = () => {
                 情報収集手段（直接問合せ ・ 先輩社員から ・ 全体周知 ・
                 小耳に挟んだ ・ その他）
               </FormLabel>
-              <Input
-                name="howToCollectSalesInfo"
-                value={formData.howToCollectSalesInfo}
-                onChange={handleChange}
-                placeholder=""
-              />
+              <Box>
+                <Input
+                  name="howToCollectSalesInfo"
+                  value={formData.howToCollectSalesInfo}
+                  onChange={handleChange}
+                  placeholder=""
+                  isInvalid={!!errors?.howToCollectSalesInfo}
+                />
+                {errors?.howToCollectSalesInfo && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.howToCollectSalesInfo}
+                  </Text>
+                )}
+              </Box>
             </VStack>
 
             <VStack align="stretch" spacing={2}>
               <FormLabel fontWeight="bold">営業に関する情報</FormLabel>
-              <Textarea
-                name="salesInfo"
-                value={formData.salesInfo}
-                onChange={handleChange}
-                placeholder=""
-                height="24"
-                maxLength={500}
-              />
+              <Box>
+                <Textarea
+                  name="salesInfo"
+                  value={formData.salesInfo}
+                  onChange={handleChange}
+                  placeholder=""
+                  height="24"
+                  maxLength={500}
+                  isInvalid={!!errors?.salesInfo}
+                />
+                {errors?.salesInfo && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {errors.salesInfo}
+                  </Text>
+                )}
+              </Box>
             </VStack>
           </VStack>
         </CardBody>

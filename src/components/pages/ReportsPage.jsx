@@ -27,8 +27,15 @@ export const ReportsPage = () => {
     navigate('/ReportDetail');
   };
 
+  const test = () => {
+    navigate('/reportedit?reportId=15');
+  };
+
   return (
     <Container>
+      <Button color="primary" onClick={test}>
+        週報更新画面遷移テスト
+      </Button>
       <TableContainer>
         <TableStyle>
           <thead>

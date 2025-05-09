@@ -15,6 +15,8 @@ export const useEmployeeData = () => {
           teamLeaderResponse.json(),
           salesEmployeeResponse.json(),
         ]);
+        console.log(teamLeadersData);
+
         setTeamLeaders(teamLeadersData);
         setSalesEmployees(salesEmployeesData);
       } catch (error) {
