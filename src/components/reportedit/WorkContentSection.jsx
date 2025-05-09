@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { InfoIcon } from 'lucide-react';
 
-export const WorkContentSection = ({ formData, onChange }) => {
+export const WorkContentSection = ({ formData, onChange, errors }) => {
   return (
     <VStack spacing={6} align="stretch">
       <Box>
@@ -25,7 +25,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
           value={formData.workContent}
           onChange={onChange}
           height="24"
+          isInvalid={!!errors?.workContent}
         />
+        {errors?.workContent && (
+          <Text color="red.500" fontSize="sm" mt={1}>
+            {errors.workContent}
+          </Text>
+        )}
       </Box>
 
       <Flex gap={4} wrap="wrap" justifyContent="flex-start">
@@ -38,7 +44,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
             onChange={onChange}
             w="100px"
             value={formData.difficulty}
+            isInvalid={!!errors?.difficulty}
           />
+          {errors?.difficulty && (
+            <Text color="red.500" fontSize="sm" mt={1}>
+              {errors.difficulty}
+            </Text>
+          )}
         </Flex>
 
         <Flex alignItems="center" gap={2} minW="200px">
@@ -50,7 +62,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
             onChange={onChange}
             w="100px"
             value={formData.schedule}
+            isInvalid={!!errors?.schedule}
           />
+          {errors?.schedule && (
+            <Text color="red.500" fontSize="sm" mt={1}>
+              {errors.schedule}
+            </Text>
+          )}
         </Flex>
       </Flex>
 
@@ -115,7 +133,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
           value={formData.failure}
           onChange={onChange}
           height="24"
+          isInvalid={!!errors?.failure}
         />
+        {errors?.failure && (
+          <Text color="red.500" fontSize="sm" mt={1}>
+            {errors.failure}
+          </Text>
+        )}
       </Box>
 
       <Box>
@@ -127,7 +151,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
           value={formData.impression}
           onChange={onChange}
           height="24"
+          isInvalid={!!errors?.impression}
         />
+        {errors?.impression && (
+          <Text color="red.500" fontSize="sm" mt={1}>
+            {errors.impression}
+          </Text>
+        )}
       </Box>
 
       <Box>
@@ -137,7 +167,13 @@ export const WorkContentSection = ({ formData, onChange }) => {
           value={formData.otherEmployees}
           onChange={onChange}
           height="24"
+          isInvalid={!!errors?.otherEmployees}
         />
+        {errors?.otherEmployees && (
+          <Text color="red.500" fontSize="sm" mt={1}>
+            {errors.otherEmployees}
+          </Text>
+        )}
       </Box>
     </VStack>
   );

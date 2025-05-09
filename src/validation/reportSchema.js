@@ -8,12 +8,8 @@ export const reportSchema = z.object({
   endDate: z.string().min(1, { message: '終了日を入力してください' }),
 
   // 現場基本情報
-  selectedTeamLeader: z
-    .string()
-    .min(1, { message: 'チームLDを選択してください' }),
-  selectedSalesEmployee: z
-    .string()
-    .min(1, { message: '担当営業を選択してください' }),
+  selectedTeamLeader: z.string().min(1, { message: '選択してください' }),
+  selectedSalesEmployee: z.string().min(1, { message: '選択してください' }),
   userCompanyName: z
     .string()
     .min(1, { message: 'ユーザー会社名を入力してください' }),
@@ -28,26 +24,31 @@ export const reportSchema = z.object({
   howToCollectSalesInfo: z
     .string()
     .min(1, { message: '情報収集手段を入力してください' }),
-  salesInfo: z.string().max(500, { message: '最大500文字までです' }),
+  salesInfo: z
+    .string()
+    .min(1, { message: '営業に関する情報を入力してください' }),
 
   // 業務状況
-  averageOvertime: z.string().optional(),
-  minimumWorkTime: z.string().optional(),
-  reachability: z.string().optional(),
-  progress: z.string().optional(),
-  condition: z.string().optional(),
-  relationship: z.string().optional(),
-  failure: z.string().optional(),
-  impression: z.string().optional(),
-  difficulty: z.string().optional(),
-  schedule: z.string().optional(),
-  otherEmployees: z.string().optional(),
+  averageOvertime: z
+    .string()
+    .min(1, { message: '平均残業時間を入力してください' }),
+  minimumWorkTime: z
+    .string()
+    .min(1, { message: '最低稼働時間を入力してください' }),
+  reachability: z.string().min(1, { message: '選択してください' }),
+  progress: z.string().min(1, { message: '選択してください' }),
+  condition: z.string().min(1, { message: '選択してください' }),
+  relationship: z.string().min(1, { message: '選択してください' }),
+  failure: z.string().min(1, { message: '失敗したことを入力してください' }),
+  impression: z.string().min(1, { message: '所感を入力してください' }),
+  difficulty: z.string().min(1, { message: '難易度を入力してください' }),
+  schedule: z.string().min(1, { message: 'スケジュール感を入力してください' }),
+  otherEmployees: z
+    .string()
+    .min(1, { message: '他社員の状況を入力してください' }),
 
   // 業務内容
-  workContent: z
-    .string()
-    .min(1, { message: '業務内容を入力してください' })
-    .max(1000, { message: '業務内容は1000文字以内で入力してください' }),
+  workContent: z.string().min(1, { message: '業務内容を入力してください' }),
 });
 
 export const validateReportForm = (formData) => {

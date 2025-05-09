@@ -414,8 +414,13 @@ export const ReportEditPage = () => {
             <WorkStatusSectionPage
               formData={formData}
               onChange={handleChange}
+              errors={errors}
             />
-            <WorkContentSection formData={formData} onChange={handleChange} />
+            <WorkContentSection
+              formData={formData}
+              onChange={handleChange}
+              errors={errors}
+            />
           </VStack>
         </CardBody>
       </Card>
