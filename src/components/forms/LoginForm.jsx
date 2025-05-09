@@ -7,7 +7,6 @@ const LoginForm = () => {
   const [user_id, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [input_error, setInputErrorState] = useState(false);
-  //const [emp_id, setEmpId] = useState('');
   const {
     setEmployeeId,
     setRole,
@@ -19,15 +18,11 @@ const LoginForm = () => {
   } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // const login = () => {
-  //   navigate('/reportedit');
-  // };
-
   const login = (e) => {
     // 画面遷移の抑制
     e.preventDefault();
 
-    fetch(`${process.env.REACT_APP_API_ROOT}/login/getLoginData`, {
+    fetch(`${process.env.REACT_APP_API_ROOT}/login`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -36,9 +31,7 @@ const LoginForm = () => {
     })
       .then((response) => response.json())
       .then((items) => {
-        console.log(items);
         if (items.length > 0 && !items.dataExists) {
-          console.log(items[0]);
           // 取得した社員ID、役職をセッションに保持
           setEmployeeId(items[0].emp_id);
           setRole(items[0].role);
@@ -48,7 +41,6 @@ const LoginForm = () => {
           setEmpLname(items[0].emp_lname);
           setEmpFname(items[0].emp_fname);
 
-          console.log(items[0].department_id);
           if (items[0].department_id === '1') {
             // 部署が総務（営業、社長）の場合、社員選択画面へ遷移
             navigate('/employeelist');
@@ -56,26 +48,12 @@ const LoginForm = () => {
             //上記以外の場合、週報一覧画面へ遷移
             navigate('/reports');
           }
-          // navigate('/reportedit');
         } else {
-          // 画面遷移の抑制
-          //e.preventDefault();
-          console.log('dataExists');
           setInputErrorState(true);
         }
       })
       .catch((err) => console.log(err));
   };
-
-  let error_text;
-  if (input_error) {
-    error_text = (
-      <p style={{ color: 'red' }}>
-        <u>ユーザIDまたはパスワードに誤りがあります。</u>
-      </p>
-    );
-  } else {
-  }
 
   return (
     <Form onSubmit={login} style={{ maxWidth: '400px', margin: 'auto' }}>
@@ -90,7 +68,7 @@ const LoginForm = () => {
           value={user_id}
           onChange={(e) => setUserId(e.target.value)}
           style={{ width: '100%' }}
-          error={input_error}
+          invalid={input_error}
         />
       </FormGroup>
       <FormGroup>
@@ -104,12 +82,17 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={{ width: '100%' }}
+          invalid={input_error}
         />
       </FormGroup>
       <Button color="primary" block style={{ marginTop: '2rem' }}>
         ログイン
       </Button>
-      {error_text}
+      {input_error && (
+        <p style={{ color: 'red' }}>
+          <u>ユーザIDまたはパスワードに誤りがあります。</u>
+        </p>
+      )}
     </Form>
   );
 };
