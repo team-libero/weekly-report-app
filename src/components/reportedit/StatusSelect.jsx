@@ -11,7 +11,7 @@ export const StatusSelect = ({ label, name, value, onChange, isInvalid }) => {
         value={value}
         onChange={onChange}
         width="32"
-        isInvalid
+        isInvalid={isInvalid}
       >
         <option value="">-</option>
         <option value="1">良い</option>

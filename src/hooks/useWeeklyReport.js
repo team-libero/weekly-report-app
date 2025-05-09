@@ -55,7 +55,7 @@ export const useWeeklyReport = (employeeId) => {
   const handleCopy = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_ROOT}/reports/previousReport/${employeeId}`
+        `${process.env.REACT_APP_API_ROOT}/reports/reportRegister/copy?employeeId=${employeeId}`
       );
 
       if (!response.ok) {
@@ -65,29 +65,30 @@ export const useWeeklyReport = (employeeId) => {
       const data = await response.json();
 
       if (data) {
+        console.log(data);
         setFormData({
           ...formData,
-          selectedTeamLeader: data.leaderEmployeeId || '',
-          selectedSalesEmployee: data.salesEmployeeId || '',
-          userCompanyName: data.userCompanyName || '',
-          primeContractorName: data.primeContractorName || '',
-          onsiteAddress: data.onsiteAddress || '',
-          fixedTime: data.fixedTime || '',
-          sourceOfSalesInfo: data.sourceOfSalesInfo || '',
-          howToCollectSalesInfo: data.howToCollectSalesInfo || '',
-          salesInfo: data.salesInfo || '',
-          averageOvertime: data.averageOvertime || '',
-          workContent: data.workContent || '',
-          minimumWorkTime: data.minimumWorkTime || '',
+          selectedTeamLeader: data.leader_emp_id || '',
+          selectedSalesEmployee: data.sales_emp_id || '',
+          userCompanyName: data.user_company_name || '',
+          primeContractorName: data.prime_contractor_name || '',
+          onsiteAddress: data.onsite_address || '',
+          fixedTime: data.fixed_time || '',
+          sourceOfSalesInfo: data.source_of_sales_info || '',
+          howToCollectSalesInfo: data.how_to_collect_sales_info || '',
+          salesInfo: data.sales_info || '',
+          averageOvertime: data.avg_overtime || '',
+          workContent: data.work_content || '',
+          minimumWorkTime: data.minimun_work_time || '',
           reachability: data.reachability || '',
           progress: data.progress || '',
-          condition: data.physicalCondition || '',
+          condition: data.physical_condition || '',
           relationship: data.relationship || '',
-          failure: data.failurePointedOut || '',
+          failure: data.failure_pointed_out || '',
           impression: data.impression || '',
-          difficulty: data.difficultyLevel || '',
-          schedule: data.senseOfSchedule || '',
-          otherEmployees: data.situationOfOtherEmployees || '',
+          difficulty: data.difficulty_level || '',
+          schedule: data.sence_of_schedule || '',
+          otherEmployees: data.situation_of_other_employees || '',
         });
       } else {
         alert('前回の週報は見つかりませんでした。');
