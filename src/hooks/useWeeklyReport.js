@@ -65,7 +65,6 @@ export const useWeeklyReport = (employeeId) => {
       const data = await response.json();
 
       if (data) {
-        console.log(data);
         setFormData({
           ...formData,
           selectedTeamLeader: data.leader_emp_id || '',
