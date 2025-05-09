@@ -8,14 +8,19 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { pathname } = useLocation();
   const {
-    employeeId,
     role,
-    setEmployeeId,
-    setRole,
+    department_id,
     department_name,
     team_name,
     emp_lname,
     emp_fname,
+    setEmployeeId,
+    setRole,
+    setDepartmentId,
+    setDepartmentName,
+    setTeamName,
+    setEmpLname,
+    setEmpFname,
   } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -24,22 +29,16 @@ const Header = () => {
   };
 
   const handleLogout = () => {
+    // UserContextの削除
     setEmployeeId('');
     setRole('');
+    setDepartmentId('');
+    setDepartmentName('');
+    setTeamName('');
+    setEmpLname('');
+    setEmpFname('');
+
     navigate('/');
-  };
-
-  const getReportsListUrl = () => {
-    const params = new URLSearchParams();
-    if (employeeId) params.append('employeeId', employeeId);
-    if (role) params.append('role', role);
-    return `/reports${params.toString() ? `?${params.toString()}` : ''}`;
-  };
-
-  const getEmployeeListUrl = () => {
-    const params = new URLSearchParams();
-    if (role) params.append('role', role);
-    return `/employeelist${params.toString() ? `?${params.toString()}` : ''}`;
   };
 
   const getLinkStyle = (path) => ({
@@ -77,16 +76,26 @@ const Header = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Box as={Link} to={getReportsListUrl()} {...getLinkStyle('/reports')}>
-            週報一覧
-          </Box>
-          <Box as={Link} to={'/reportedit'} {...getLinkStyle('/reportedit')}>
-            週報登録/更新
-          </Box>
-          {role !== '1' && (
+          {department_id === '2' && (
+            <>
+              <Box as={Link} to={'/reports'} {...getLinkStyle('/reports')}>
+                週報一覧
+              </Box>
+
+              <Box
+                as={Link}
+                to={'/reportedit'}
+                {...getLinkStyle('/reportedit')}
+              >
+                週報登録/更新
+              </Box>
+            </>
+          )}
+          {(department_id === '1' ||
+            (department_id === '2' && role !== '1')) && (
             <Box
               as={Link}
-              to={getEmployeeListUrl()}
+              to={'/employeelist'}
               {...getLinkStyle('/employeelist')}
             >
               社員一覧
@@ -134,30 +143,36 @@ const Header = () => {
           zIndex="10"
         >
           <VStack spacing={4} align="start">
-            <Box
-              as={Link}
-              to={getReportsListUrl()}
-              w="100%"
-              p="2"
-              _hover={{ bg: 'blue.700', textDecoration: 'none' }}
-              _focus={{ bg: 'blue.700', boxShadow: 'none' }}
-            >
-              週報一覧
-            </Box>
-            <Box
-              as={Link}
-              to={'/reportedit'}
-              w="100%"
-              p="2"
-              _hover={{ bg: 'blue.700', textDecoration: 'none' }}
-              _focus={{ bg: 'blue.700', boxShadow: 'none' }}
-            >
-              週報登録/更新
-            </Box>
-            {role !== '1' && (
+            {department_id === '2' && (
+              <>
+                <Box
+                  as={Link}
+                  to={'/reports'}
+                  w="100%"
+                  p="2"
+                  _hover={{ bg: 'blue.700', textDecoration: 'none' }}
+                  _focus={{ bg: 'blue.700', boxShadow: 'none' }}
+                >
+                  週報一覧
+                </Box>
+                <Box
+                  as={Link}
+                  to={'/reportedit'}
+                  w="100%"
+                  p="2"
+                  _hover={{ bg: 'blue.700', textDecoration: 'none' }}
+                  _focus={{ bg: 'blue.700', boxShadow: 'none' }}
+                >
+                  週報登録/更新
+                </Box>
+              </>
+            )}
+
+            {(department_id === '1' ||
+              (department_id === '2' && role !== '1')) && (
               <Box
                 as={Link}
-                to={getEmployeeListUrl()}
+                to={'/employeelist'}
                 w="100%"
                 p="2"
                 _hover={{ bg: 'blue.700', textDecoration: 'none' }}
