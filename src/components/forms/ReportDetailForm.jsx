@@ -1,8 +1,9 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { IoReturnDownBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
 
 const InfoGroup = ({ title, content }) => (
   <Flex
@@ -45,19 +46,22 @@ const ReportDetailForm = (e) => {
   const reportId = searchParams.get('reportId');
   const [item, setItem] = useState('');
 
-  //const [input_error, setInputErrorState] = useState(false);
-
   const navigate = useNavigate();
 
+  const { employeeId } = useContext(UserContext);
+
+  const [editButtonIsVisible, setEditButtonIsVisible] = useState(false);
+
+  // 戻るボタン押下処理
   const onClickReturn = () => {
     navigate(-1);
   };
 
+  // 編集ボタン押下処理
   const onClickEdit = (e) => {
     navigate(`/reportedit?reportId=${reportId}`);
   };
 
-  //TODO リクエストパラメータから取得するように修正
   if (item === '') {
     // 初期表示の場合のみAPIで週報情報を取得
     fetch(
@@ -70,11 +74,12 @@ const ReportDetailForm = (e) => {
           console.log(items[0]);
           setItem(items[0]);
           console.log(item);
-        } else {
-          // 画面遷移の抑制
-          //e.preventDefault();
-          console.log('dataExists');
-          //setInputErrorState(true);
+
+          if (employeeId === item.employeeId) {
+            setEditButtonIsVisible(true);
+          } else {
+            setEditButtonIsVisible(false);
+          }
         }
       })
       .catch((err) => console.log(err));
@@ -96,9 +101,12 @@ const ReportDetailForm = (e) => {
           <Button sx={styledButtonStyles}>先週</Button>
           <Button sx={styledButtonStyles}>翌週</Button>
           */}
-          <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
-            編集
-          </Button>
+          {
+            /*TODO styledEditButtonStylesがfalseのときに編集ボタンを非表示にする処理 */
+            <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
+              編集
+            </Button>
+          }
         </Flex>
       </Flex>
       <Box p={4} bg="gray.200" borderRadius="md">
