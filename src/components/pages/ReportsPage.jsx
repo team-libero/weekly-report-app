@@ -41,7 +41,7 @@ export const ReportsPage = () => {
   }, []);
 
   const onClickConfirm = (id) => {
-    navigate(`reports/reportDetail?reportId=${id}`);
+    navigate(`/reportdetail?reportId=${id}`);
   };
 
   return (
