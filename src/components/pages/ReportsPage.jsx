@@ -3,26 +3,53 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Accordion,
-  AccordionBody,
-  AccordionHeader,
-  AccordionItem,
+ // AccordionBody,
+ // AccordionHeader,
+ // AccordionItem,
   Button,
   Table,
 } from 'reactstrap';
 import styled from 'styled-components';
 
 export const ReportsPage = () => {
-  const array = new Array(3).fill(null);
-  const [open, setOpen] = useState('');
-  const toggle = (id) => {
-    if (open === id) {
-      setOpen('');
-    } else {
-      setOpen(id);
-    }
-  };
   const navigate = useNavigate();
 
+  const employee_Id = '26'; // navigate.user_id;
+  console.log('Employee ID:', employee_Id);
+
+  // getRecords() {
+    const items = fetch(`${process.env.REACT_APP_API_ROOT}/reports?employeeId=${employee_Id}&pageNo=1&dataAmount=10`);
+      // .then(response => response.json())
+      // .then(items => this.setState({ items: items }))
+      // .catch(err => console.log(err));
+  // };
+  // const data = getRecords();
+  // fetch(`${process.env.REACT_APP_API_ROOT}/reports?employeeId=${employee_Id}&pageNo=1&dataAmount=10`, {
+  //   method: 'get',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify({
+  //     emp_id
+  //   })
+  // })
+  //   .then(response => response.json())
+  //   .then(item => {
+  //     this.props.deleteItemFromState(emp_id)
+  //   })
+  //   .catch(err => console.log(err));
+  
+  const array = new Array(3).fill(null);
+  
+  // const [open, setOpen] = useState('');
+  // const toggle = (employee_Id) => {
+  //   if (open === employee_Id) {
+  //     setOpen('');
+  //   } else {
+  //     setOpen(employee_Id);
+  //   }
+  // };
+  
   const onClickConfirm = () => {
     navigate('/ReportDetail');
   };
@@ -33,26 +60,66 @@ export const ReportsPage = () => {
         <TableStyle>
           <thead>
             <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
+              <td>記入社名</td>
+              <td className="border-left">{items.name}</td>
             </tr>
           </thead>
           <thead>
             <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
+              <td>所属チームLD名</td>
+              <td className="border-left">{items.name}{items.teamLdName}菊地　恭平LD</td>
             </tr>
           </thead>
           <thead>
             <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
+              <td>ユーザ会社名</td>
+              <td className="border-left">{items.userCompany}ユーザー株式会社</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <td>元請会社名</td>
+              <td className="border-left">{items.primeContractor}元請株式会社</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <td>現場住所</td>
+              <td className="border-left">{items.adress}東京都　新宿区　現在町　１－１－１</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <td>定時</td>
+              <td className="border-left">{items.regularTime}09：00～17:30</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <td>自社担当営業</td>
+              <td className="border-left">{items.salesEmployee}花岡MGR</td>
             </tr>
           </thead>
         </TableStyle>
       </TableContainer>
       <Flex justifyContent="center" alignItems="center" px={4} width="100%">
-        <AccordionContainer flush open={open} toggle={toggle}>
+      <TableStyle>
+                <tbody>
+                  {array.map((_, index) => (
+                    <tr key={index}>
+                      <td style={{ verticalAlign: 'middle' }}>
+                        2024/07/08 ~ 2024/07/14
+                      </td>
+                      <td>
+                        <Button color="primary" onClick={onClickConfirm}>
+                          確認
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </TableStyle>
+        {/* <AccordionContainer flush open={open} toggle={toggle}>
           <AccordionItem>
             <AccordionHeader targetId="1">2024/01 ~</AccordionHeader>
             <AccordionBody accordionId="1">
@@ -116,7 +183,7 @@ export const ReportsPage = () => {
               </TableStyle>
             </AccordionBody>
           </AccordionItem>
-        </AccordionContainer>
+        </AccordionContainer> */}
       </Flex>
     </Container>
   );
@@ -127,10 +194,11 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
 `;
-
+/**
 const AccordionContainer = styled(Accordion)`
   width: 100%;
 `;
+ */
 
 const TableStyle = styled(Table)`
   width: 100%;
