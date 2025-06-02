@@ -1,30 +1,47 @@
-import { Flex } from '@chakra-ui/react';
-import { useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Accordion,
-  AccordionBody,
-  AccordionHeader,
-  AccordionItem,
-  Button,
-  Table,
-} from 'reactstrap';
+import { Button } from 'reactstrap';
 import styled from 'styled-components';
+import { UserContext } from '../contexts/UserContext';
 
 export const ReportsPage = () => {
-  const array = new Array(3).fill(null);
-  const [open, setOpen] = useState('');
-  const toggle = (id) => {
-    if (open === id) {
-      setOpen('');
-    } else {
-      setOpen(id);
-    }
-  };
   const navigate = useNavigate();
+  const [reportsInfo, setReportsInfo] = useState({});
+  const [reports, setReports] = useState([]);
 
-  const onClickConfirm = () => {
-    navigate('/ReportDetail');
+  const { employeeId } = useContext(UserContext);
+  console.log('Employee ID:', employeeId);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [response, response2] = await Promise.all([
+          fetch(
+            `${process.env.REACT_APP_API_ROOT}/reportsInfo?employeeId=${employeeId}`
+          ),
+          fetch(
+            `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${employeeId}`
+          ),
+        ]);
+
+        const [data1, data2] = await Promise.all([
+          response.json(),
+          response2.json(),
+        ]);
+
+        const result1 = data1.result[0];
+        setReportsInfo(result1);
+        setReports(data2);
+      } catch (error) {
+        console.error('Faled to fetch report data', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const onClickConfirm = (id) => {
+    navigate(`/reportdetail?reportId=${id}`);
   };
 
   const test = () => {
@@ -37,93 +54,90 @@ export const ReportsPage = () => {
         週報更新画面遷移テスト
       </Button>
       <TableContainer>
-        <TableStyle>
-          <thead>
-            <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <td>列A</td>
-              <td className="border-left">列B</td>
-            </tr>
-          </thead>
-        </TableStyle>
+        <Flex justifyContent="center" width="100%" px={4}>
+          <Box
+            width="100%"
+            maxW="720px"
+            bg="white"
+            borderRadius="md"
+            boxShadow="sm"
+          >
+            <TableStyle>
+              <thead>
+                <tr>
+                  <td>記入社名</td>
+                  <td className="border-left">{reportsInfo.name}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>所属チームLD名</td>
+                  <td className="border-left">{reportsInfo.teamldname}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>ユーザ会社名</td>
+                  <td className="border-left">{reportsInfo.userCompany}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>元請会社名</td>
+                  <td className="border-left">{reportsInfo.primeContractor}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>現場住所</td>
+                  <td className="border-left">{reportsInfo.address}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>定時</td>
+                  <td className="border-left">{reportsInfo.regularTime}</td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <td>自社担当営業</td>
+                  <td className="border-left">{reportsInfo.salesemployee}</td>
+                </tr>
+              </thead>
+            </TableStyle>
+          </Box>
+        </Flex>
       </TableContainer>
-      <Flex justifyContent="center" alignItems="center" px={4} width="100%">
-        <AccordionContainer flush open={open} toggle={toggle}>
-          <AccordionItem>
-            <AccordionHeader targetId="1">2024/01 ~</AccordionHeader>
-            <AccordionBody accordionId="1">
-              <TableStyle>
-                <tbody>
-                  {array.map((_, index) => (
-                    <tr key={index}>
-                      <td style={{ verticalAlign: 'middle' }}>
-                        2024/07/08 ~ 2024/07/14
-                      </td>
-                      <td>
-                        <Button color="primary" onClick={onClickConfirm}>
-                          確認
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </TableStyle>
-            </AccordionBody>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader targetId="2">2023/01 ~ 2023/12</AccordionHeader>
-            <AccordionBody accordionId="2">
-              <TableStyle>
-                <tbody>
-                  {array.map((_, index) => (
-                    <tr key={index}>
-                      <td style={{ verticalAlign: 'middle' }}>
-                        2024/07/08 ~ 2024/07/14
-                      </td>
-                      <td>
-                        <Button color="primary" onClick={onClickConfirm}>
-                          確認
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </TableStyle>
-            </AccordionBody>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader targetId="3">2022/01 ~ 2022/12</AccordionHeader>
-            <AccordionBody accordionId="3">
-              <TableStyle>
-                <tbody>
-                  {array.map((_, index) => (
-                    <tr key={index}>
-                      <td style={{ verticalAlign: 'middle' }}>
-                        2024/07/08 ~ 2024/07/14
-                      </td>
-                      <td>
-                        <Button color="primary" onClick={onClickConfirm}>
-                          確認
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </TableStyle>
-            </AccordionBody>
-          </AccordionItem>
-        </AccordionContainer>
+      <Flex justifyContent="center" width="100%" px={4}>
+        <Box
+          width="100%"
+          mt={'16px'}
+          maxW="720px"
+          bg="white"
+          borderRadius="md"
+          boxShadow="sm"
+        >
+          <TableStyle>
+            <tbody>
+              {reports.reportList?.map((report) => (
+                <tr key={report.reportId}>
+                  <td style={{ verticalAlign: 'middle' }}>
+                    {report.reportperiod}
+                  </td>
+                  <td>
+                    <Button
+                      onClick={() => onClickConfirm(report.reportId)}
+                      style={styledButtonStyles}
+                    >
+                      確認
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </TableStyle>
+        </Box>
       </Flex>
     </Container>
   );
@@ -135,17 +149,35 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const AccordionContainer = styled(Accordion)`
+const TableStyle = styled.table`
   width: 100%;
-`;
+  border-collapse: collapse;
 
-const TableStyle = styled(Table)`
-  width: 100%;
-  .border-left {
-    border-left: 2px solid #dcdcdc;
+  tr {
+    border-bottom: 1px solid #e2e8f0;
+    height: 60px;
+  }
+
+  td {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  td:last-child {
+    text-align: right;
   }
 `;
 
 const TableContainer = styled.div`
   margin: 0 auto;
 `;
+
+const styledButtonStyles = {
+  backgroundColor: '#2b6cb0',
+  color: 'white',
+  padding: '8px 16px',
+  marginRight: '4px',
+  _hover: {
+    backgroundColor: '#2c5282',
+  },
+};
