@@ -14,7 +14,7 @@ import styled from 'styled-components';
 export const ReportsPage = () => {
   const navigate = useNavigate();
 
-  const employee_Id = '26'; // navigate.user_id;
+  const employee_Id = '55'; // navigate.user_id;
   console.log('Employee ID:', employee_Id);
 
   // getRecords() {
@@ -106,7 +106,7 @@ export const ReportsPage = () => {
       <TableStyle>
                 <tbody>
                   {array.map((_, index) => (
-                    <tr key={index}>
+                    <tr key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#ffffff" }}>
                       <td style={{ verticalAlign: 'middle' }}>
                         2024/07/08 ~ 2024/07/14
                       </td>
