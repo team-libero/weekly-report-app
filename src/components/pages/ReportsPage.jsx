@@ -40,8 +40,8 @@ export const ReportsPage = () => {
     fetchData();
   }, []);
 
-  const onClickConfirm = () => {
-    navigate('/ReportDetail');
+  const onClickConfirm = (id) => {
+    navigate(`reports/reportDetail?reportId=${id}`);
   };
 
   return (
