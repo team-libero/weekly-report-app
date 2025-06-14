@@ -1,9 +1,12 @@
-import { Table, Button } from 'reactstrap';
+import { Table } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
 
-const EmployeeTable = () => {
-  let items;
-  if (this.props.items.length > 0) {
-    items = this.props.items.map((item) => {
+const EmployeeTable = ({ items }) => {
+
+  let employeeList = '';
+  if (items.length > 0) {
+    employeeList = items.map((item) => {
       return (
         <tr key={item.employeeId}>
           <th scope="row">{item.employeeId}</th>
@@ -11,14 +14,19 @@ const EmployeeTable = () => {
           <td>{item.mail}</td>
           <td>
             <div style={{ margin: 'auto' }}>
-
+              <Box
+                className="bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 px-3 py-1"
+                color="white"
+                as={Link}
+                to={`/reports?employeeId=${item.employeeId}`}
+              >
+                選択
+              </Box>
             </div>
           </td>
         </tr>
       );
-      });
-  } else {
-    items = '';
+    });
   }
 
   return (
@@ -31,7 +39,7 @@ const EmployeeTable = () => {
           <th></th>
         </tr>
       </thead>
-      <tbody>{items}</tbody>
+      <tbody>{employeeList}</tbody>
     </Table>
   );
 }

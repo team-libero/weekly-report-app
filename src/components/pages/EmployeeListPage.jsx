@@ -16,7 +16,7 @@ const EmployeeListPage = () => {
       fetch(`${process.env.REACT_APP_API_ROOT}/employee/get?employeeId=${employeeId}`)
         .then((response) => response.json())
         .then((items) => {
-          setTeamList(items.teamList );
+          setTeamList(items.teamList);
           setEmployeeList(items.teamList[0].employeeList);
         })
         .catch((err) => console.log(err));
@@ -26,7 +26,7 @@ const EmployeeListPage = () => {
 
   const handleTeamChange = (event) => {
     const selectedTeamId = event.target.value;
-    const selectedTeam = this.state.teamList.find(
+    const selectedTeam = teamList.find(
       (team) => String(team.teamId) === selectedTeamId
     );
     if (selectedTeam) {
@@ -59,12 +59,7 @@ const EmployeeListPage = () => {
       </Row>
       <Row>
         <Col>
-          <script>
-            function handleChange(selectElement){' '}
-            {
-              <EmployeeTable items={employeeList} />
-            }
-          </script>
+          <EmployeeTable items={employeeList} />
         </Col>
       </Row>
     </Container>
