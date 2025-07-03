@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import styled from 'styled-components';
 import { UserContext } from '../contexts/UserContext';
@@ -9,19 +10,23 @@ export const ReportsPage = () => {
   const navigate = useNavigate();
   const [reportsInfo, setReportsInfo] = useState({});
   const [reports, setReports] = useState([]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const employeeIdFromQuery = queryParams.get('employeeId');
 
   const { employeeId } = useContext(UserContext);
-  console.log('Employee ID:', employeeId);
+  // 優先する employeeId（クエリが存在すればそれを、なければセッション）
+  const effectiveEmployeeId = employeeIdFromQuery ?? employeeId
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [response, response2] = await Promise.all([
           fetch(
-            `${process.env.REACT_APP_API_ROOT}/reportsInfo?employeeId=${employeeId}`
+            `${process.env.REACT_APP_API_ROOT}/reportsInfo?employeeId=${effectiveEmployeeId}`
           ),
           fetch(
-            `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${employeeId}`
+            `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${effectiveEmployeeId}`
           ),
         ]);
 
@@ -62,7 +67,7 @@ export const ReportsPage = () => {
             <TableStyle>
               <thead>
                 <tr>
-                  <td>記入社名</td>
+                  <td>記入者名</td>
                   <td className="border-left">{reportsInfo ? reportsInfo.name : ""}</td>
                 </tr>
               </thead>
