@@ -69,13 +69,10 @@ const ReportDetailForm = (e) => {
     )
       .then((response) => response.json())
       .then((items) => {
-        console.log(items);
         if (items.length > 0 && !items.dataExists) {
-          console.log(items[0]);
           setItem(items[0]);
-          console.log(item);
 
-          if (employeeId === item.employeeId) {
+          if (employeeId === items[0].emp_id) {
             setEditButtonIsVisible(true);
           } else {
             setEditButtonIsVisible(false);
@@ -101,12 +98,11 @@ const ReportDetailForm = (e) => {
           <Button sx={styledButtonStyles}>先週</Button>
           <Button sx={styledButtonStyles}>翌週</Button>
           */}
-          {
-            /*TODO styledEditButtonStylesがfalseのときに編集ボタンを非表示にする処理 */
+          {editButtonIsVisible && (
             <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
               編集
             </Button>
-          }
+          )}
         </Flex>
       </Flex>
       <Box p={4} bg="gray.200" borderRadius="md">
