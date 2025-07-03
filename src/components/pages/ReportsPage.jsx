@@ -63,43 +63,43 @@ export const ReportsPage = () => {
               <thead>
                 <tr>
                   <td>記入社名</td>
-                  <td className="border-left">{reportsInfo.name}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.name : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>所属チームLD名</td>
-                  <td className="border-left">{reportsInfo.teamldname}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.teamldname : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>ユーザ会社名</td>
-                  <td className="border-left">{reportsInfo.userCompany}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.userCompany : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>元請会社名</td>
-                  <td className="border-left">{reportsInfo.primeContractor}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.primeContractor : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>現場住所</td>
-                  <td className="border-left">{reportsInfo.address}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.address : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>定時</td>
-                  <td className="border-left">{reportsInfo.regularTime}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.regularTime : ""}</td>
                 </tr>
               </thead>
               <thead>
                 <tr>
                   <td>自社担当営業</td>
-                  <td className="border-left">{reportsInfo.salesemployee}</td>
+                  <td className="border-left">{reportsInfo ? reportsInfo.salesemployee : ""}</td>
                 </tr>
               </thead>
             </TableStyle>
