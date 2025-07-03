@@ -30,7 +30,11 @@ const initialFormState = {
   workContent: '',
 };
 
-export const useWeeklyReport = (employeeId) => {
+export const useWeeklyReport = (
+  employeeId,
+  isEdit = false,
+  reportId = null
+) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,50 +127,70 @@ export const useWeeklyReport = (employeeId) => {
     setIsSubmitting(true);
 
     try {
-      const apiUrl = `${process.env.REACT_APP_API_ROOT}/reports`;
-      const method = 'POST';
+      // isEditの状態に応じてメソッドとURLを切り替え
+      const method = isEdit ? 'PUT' : 'POST';
+      // 修正: クエリパラメータを正しく構築
+      const apiUrl = isEdit
+        ? `${process.env.REACT_APP_API_ROOT}/reports/reportRegister?reportId=${reportId}`
+        : `${process.env.REACT_APP_API_ROOT}/reports/reportRegister`;
+
+      const requestBody = {
+        employeeId,
+        periodStartDate: formData.startDate,
+        periodEndDate: formData.endDate,
+        leaderEmployeeId: formData.selectedTeamLeader,
+        salesEmployeeId: formData.selectedSalesEmployee,
+        userCompanyName: formData.userCompanyName,
+        primeContractorName: formData.primeContractorName,
+        onsiteAddress: formData.onsiteAddress,
+        fixedTime: formData.fixedTime,
+        sourceOfSalesInfo: formData.sourceOfSalesInfo,
+        howToCollectSalesInfo: formData.howToCollectSalesInfo,
+        salesInfo: formData.salesInfo,
+        averageOverTime: formData.averageOvertime, // 修正: バックエンドに合わせてキー名を変更
+        workContent: formData.workContent,
+        minimumWorkTime: formData.minimumWorkTime,
+        reachability: formData.reachability,
+        progress: formData.progress,
+        physicalCondition: formData.condition,
+        relationship: formData.relationship,
+        failurePointedOut: formData.failure,
+        impression: formData.impression,
+        difficultyLevel: formData.difficulty,
+        senseOfSchedule: formData.schedule,
+        situationOfOtherEmployees: formData.otherEmployees,
+      };
+
+      // 編集の場合はreportIdも含める（念のため）
+      if (isEdit) {
+        requestBody.reportId = reportId;
+      }
 
       const response = await fetch(apiUrl, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          employeeId,
-          periodStartDate: formData.startDate,
-          periodEndDate: formData.endDate,
-          leaderEmployeeId: formData.selectedTeamLeader,
-          salesEmployeeId: formData.selectedSalesEmployee,
-          userCompanyName: formData.userCompanyName,
-          primeContractorName: formData.primeContractorName,
-          onsiteAddress: formData.onsiteAddress,
-          fixedTime: formData.fixedTime,
-          sourceOfSalesInfo: formData.sourceOfSalesInfo,
-          howToCollectSalesInfo: formData.howToCollectSalesInfo,
-          salesInfo: formData.salesInfo,
-          averageOvertime: formData.averageOvertime,
-          workContent: formData.workContent,
-          minimumWorkTime: formData.minimumWorkTime,
-          reachability: formData.reachability,
-          progress: formData.progress,
-          physicalCondition: formData.condition,
-          relationship: formData.relationship,
-          failurePointedOut: formData.failure,
-          impression: formData.impression,
-          difficultyLevel: formData.difficulty,
-          senseOfSchedule: formData.schedule,
-          situationOfOtherEmployees: formData.otherEmployees,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit report');
+        throw new Error(`Failed to ${isEdit ? 'update' : 'submit'} report`);
       }
 
-      navigate('/report/complete');
+      // レスポンスから週報情報を取得
+      const responseData = await response.json();
+
+      // 編集の場合は既存のreportIdを使用、新規登録の場合はレスポンスから取得
+      const targetReportId = isEdit
+        ? reportId
+        : responseData[0]?.weekly_report_id;
+
+      // 週報詳細ページに遷移
+      navigate(`/reportdetail?reportId=${targetReportId}`);
     } catch (error) {
-      console.error('Failed to submit report:', error);
-      alert('週報の送信に失敗しました。');
+      console.error(`Failed to ${isEdit ? 'update' : 'submit'} report:`, error);
+      alert(`週報の${isEdit ? '更新' : '送信'}に失敗しました。`);
     } finally {
       setIsSubmitting(false);
     }

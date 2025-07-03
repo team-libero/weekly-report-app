@@ -27,6 +27,9 @@ export const ReportEditPage = () => {
   const reportId = searchParams.get('reportId');
 
   const { employeeId, emp_lname, emp_fname } = useContext(UserContext);
+  const [isEdit, setIsEdit] = useState(false);
+
+  // isEditとreportIdを渡してフックを初期化
   const {
     handleCopy,
     handleChange,
@@ -36,8 +39,8 @@ export const ReportEditPage = () => {
     setFormData,
     isSubmitting,
     errors,
-  } = useWeeklyReport(employeeId);
-  const [isEdit, setIsEdit] = useState(false);
+  } = useWeeklyReport(employeeId, isEdit, reportId);
+
   const { teamLeaders, salesEmployees } = useEmployeeData();
   const navigate = useNavigate();
   const employeeName = emp_lname + ' ' + emp_fname;
@@ -100,7 +103,7 @@ export const ReportEditPage = () => {
       }
     };
     fetchData();
-  }, [reportId]);
+  }, [reportId, employeeId, navigate, setFormData]);
 
   return (
     <div className="container mx-auto pl-16 pr-16 pb-8">
