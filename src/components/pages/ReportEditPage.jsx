@@ -57,41 +57,42 @@ export const ReportEditPage = () => {
         setIsEdit(true);
         try {
           const response = await fetch(
-            `${process.env.REACT_APP_API_ROOT}/reports/reportDetail/${reportId}`
+            `${process.env.REACT_APP_API_ROOT}/reports/reportDetail?reportId=${reportId}`
           );
-          const data = await response.json();
+          const datas = await response.json();
+          const data = datas[0];
 
           // 所有者チェック
-          if (data.employeeId !== employeeId) {
+          if (data.emp_id !== employeeId) {
             console.error('アクセス権限がありません');
             navigate('/error');
             return;
           }
 
           setFormData({
-            startDate: data.periodStartDate,
-            endDate: data.periodEndDate,
-            selectedTeamLeader: data.leaderEmployeeId,
-            selectedSalesEmployee: data.salesEmployeeId,
-            userCompanyName: data.userCompanyName,
-            primeContractorName: data.primeContractorName,
-            onsiteAddress: data.onsiteAddress,
-            fixedTime: data.fixedTime,
-            sourceOfSalesInfo: data.sourceOfSalesInfo,
-            howToCollectSalesInfo: data.howToCollectSalesInfo,
-            salesInfo: data.salesInfo,
-            averageOvertime: data.averageOvertime,
-            workContent: data.workContent,
-            minimumWorkTime: data.minimumWorkTime,
+            startDate: data.period_start_date,
+            endDate: data.period_end_date,
+            selectedTeamLeader: data.leader_emp_id,
+            selectedSalesEmployee: data.sales_emp_id,
+            userCompanyName: data.user_company_name,
+            primeContractorName: data.prime_contractor_name,
+            onsiteAddress: data.onsite_address,
+            fixedTime: data.fixed_time,
+            sourceOfSalesInfo: data.source_of_sales_info,
+            howToCollectSalesInfo: data.how_to_collect_sales_info,
+            salesInfo: data.sales_info,
+            averageOvertime: data.avg_overtime,
+            workContent: data.work_content,
+            minimumWorkTime: data.minimun_work_time,
             reachability: data.reachability,
             progress: data.progress,
-            condition: data.physicalCondition,
+            condition: data.physical_condition,
             relationship: data.relationship,
-            failure: data.failurePointedOut,
+            failure: data.failure_pointed_out,
             impression: data.impression,
-            difficulty: data.difficultyLevel,
-            schedule: data.senseOfSchedule,
-            otherEmployees: data.situationOfOtherEmployees,
+            difficulty: data.difficulty_level,
+            schedule: data.sence_of_schedule,
+            otherEmployees: data.situation_of_other_employees,
           });
         } catch (error) {
           console.error('Failed to fetch report data:', error);
