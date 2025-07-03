@@ -50,9 +50,6 @@ export const ReportsPage = () => {
 
   return (
     <Container>
-      <Button color="primary" onClick={test}>
-        週報更新画面遷移テスト
-      </Button>
       <TableContainer>
         <Flex justifyContent="center" width="100%" px={4}>
           <Box

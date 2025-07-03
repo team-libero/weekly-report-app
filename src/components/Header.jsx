@@ -64,11 +64,9 @@ const Header = () => {
     <Box bg="blue.500" px={4} py={2} color="white">
       <Flex alignItems="center" justifyContent="space-between">
         <Box flex="0 0 200px">
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <Text fontSize="lg" fontWeight="bold">
-              週報アプリ
-            </Text>
-          </Link>
+          <Text fontSize="lg" fontWeight="bold">
+            週報アプリ
+          </Text>
         </Box>
 
         <Flex
