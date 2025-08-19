@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container } from 'reactstrap';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import LoginPage from './components/pages/LoginPage';
 import EmployeeListPage from './components/pages/EmployeeListPage';
 import NotfoundPage from './components/pages/NotfoundPage';
@@ -24,6 +24,16 @@ const theme = extendTheme({
   },
 });
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]); // パスが変わるたびに実行
+
+  return null;
+};
+
 const Layout = ({ children }) => {
   return (
     <>
@@ -37,6 +47,7 @@ const App = () => {
   return (
     <UserProvider>
       <ChakraProvider theme={theme}>
+        <ScrollToTop />
         <Routes>
           <Route path="/" exact element={<LoginPage />} />
           <Route
