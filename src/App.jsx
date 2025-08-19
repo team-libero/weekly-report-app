@@ -10,6 +10,7 @@ import { ReportEditPage } from './components/pages/ReportEditPage';
 import { ReportsPage } from './components/pages/ReportsPage';
 import Header from './components/Header';
 import { UserProvider } from './components/contexts/UserContext';
+import ErrorPage from './components/pages/ErrorPage';
 
 const theme = extendTheme({
   styles: {
@@ -71,6 +72,15 @@ const App = () => {
             element={
               <Layout>
                 <ReportEditPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/error"
+            exact
+            element={
+              <Layout>
+                <ErrorPage />
               </Layout>
             }
           />
