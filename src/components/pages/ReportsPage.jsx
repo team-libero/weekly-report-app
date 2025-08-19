@@ -13,10 +13,14 @@ export const ReportsPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const employeeIdFromQuery = queryParams.get('employeeId');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { employeeId } = useContext(UserContext);
   // 優先する employeeId（クエリが存在すればそれを、なければセッション）
   const effectiveEmployeeId = employeeIdFromQuery ?? employeeId
+  // 1ページあたりのデータ数
+  const dataAmount = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +30,7 @@ export const ReportsPage = () => {
             `${process.env.REACT_APP_API_ROOT}/reportsInfo?employeeId=${effectiveEmployeeId}`
           ),
           fetch(
-            `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${effectiveEmployeeId}`
+            `${process.env.REACT_APP_API_ROOT}/reports?employeeId=${effectiveEmployeeId}&pageNo=${currentPage}&dataAmount=${dataAmount}`
           ),
         ]);
 
@@ -37,20 +41,17 @@ export const ReportsPage = () => {
 
         const result1 = data1.result[0];
         setReportsInfo(result1);
+        setTotalPages(Math.ceil(data1.countResult[0].total / dataAmount));
         setReports(data2);
       } catch (error) {
         console.error('Faled to fetch report data', error);
       }
     };
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const onClickConfirm = (id) => {
     navigate(`/reportdetail?reportId=${id}`);
-  };
-
-  const test = () => {
-    navigate('/reportedit?reportId=15');
   };
 
   return (
@@ -139,6 +140,59 @@ export const ReportsPage = () => {
               ))}
             </tbody>
           </TableStyle>
+          <div style={{ textAlign: 'center', margin: '16px 0' }}>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              style={{
+                margin: '0 4px',
+                padding: '6px 12px',
+                backgroundColor: '#eee',
+                color: '#000',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: currentPage === 1 ? 'default' : 'pointer',
+                opacity: currentPage === 1 ? 0.6 : 1
+              }}
+            >
+            前へ
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                disabled={currentPage === i + 1}
+                style={{
+                  margin: '0 4px',
+                  padding: '6px 12px',
+                  backgroundColor: currentPage === i + 1 ? '#007bff' : '#eee',
+                  color: currentPage === i + 1 ? '#fff' : '#000',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: currentPage === i + 1 ? 'default' : 'pointer',
+                  opacity: currentPage === i + 1 ? 0.6 : 1
+                }}
+              >
+              {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              style={{
+                margin: '0 4px',
+                padding: '6px 12px',
+                backgroundColor: '#eee',
+                color: '#000',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: currentPage === totalPages ? 'default' : 'pointer',
+                opacity: currentPage === totalPages ? 0.6 : 1
+              }}
+            >
+            次へ
+            </button>
+          </div>
         </Box>
       </Flex>
     </Container>
