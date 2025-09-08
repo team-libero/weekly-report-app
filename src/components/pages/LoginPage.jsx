@@ -18,13 +18,23 @@ const LoginPage = () => {
         </Heading>
         <LoginForm />
         <u>
-          <a href="https://www.google.com/">
+          <button className="link-button" onClick={() => alert('管理職に連絡してください')} style={alertStyles}>
             IDやパスワードを忘れてしまった場合
-          </a>
+          </button>
         </u>
       </Box>
     </Flex>
   );
+};
+
+const alertStyles = {
+  background: 'none',
+    border: 'none',
+    color: 'blue',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    font: 'inherit',
+    padding: 0
 };
 
 export default LoginPage;
