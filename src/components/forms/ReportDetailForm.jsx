@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { IoReturnDownBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
@@ -41,45 +41,62 @@ const styledEditButtonStyles = {
 };
 
 const ReportDetailForm = (e) => {
-  // リクエストパラメータから週報IDを取得
   const [searchParams] = useSearchParams();
   const reportId = searchParams.get('reportId');
-  const [item, setItem] = useState('');
+  const [item, setItem] = useState(null);
 
   const navigate = useNavigate();
-
-  const { employeeId } = useContext(UserContext);
-
+  const { employeeId, role, department_id } = useContext(UserContext);
   const [editButtonIsVisible, setEditButtonIsVisible] = useState(false);
 
-  // 戻るボタン押下処理
   const onClickReturn = () => {
     navigate(-1);
   };
 
-  // 編集ボタン押下処理
   const onClickEdit = (e) => {
     navigate(`/reportedit?reportId=${reportId}`);
   };
 
-  if (item === '') {
-    // 初期表示の場合のみAPIで週報情報を取得
+  // useEffectで副作用を管理
+  useEffect(() => {
+    if (!reportId) return;
+
     fetch(
       `${process.env.REACT_APP_API_ROOT}/reports/reportDetail?reportId=${reportId}`
     )
       .then((response) => response.json())
       .then((items) => {
         if (items.length > 0 && !items.dataExists) {
-          setItem(items[0]);
+          const reportData = items[0];
 
-          if (employeeId === items[0].emp_id) {
-            setEditButtonIsVisible(true);
-          } else {
-            setEditButtonIsVisible(false);
+          // 権限チェック：本人、チームリーダー、総務、AMG、MGRのいずれかであるかチェックする
+          const canView =
+            employeeId === reportData.emp_id ||
+            employeeId === reportData.leader_emp_id ||
+            department_id === '1' ||
+            role === '4' ||
+            role === '5';
+
+          if (!canView) {
+            navigate('/error');
+            return;
           }
+
+          setItem(reportData);
+          setEditButtonIsVisible(employeeId === reportData.emp_id);
+        } else {
+          navigate('/notfound');
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        alert('週報の取得に失敗しました');
+      });
+  }, [reportId, employeeId, navigate, role, department_id]);
+
+  // データ読み込み中の表示
+  if (!item) {
+    return <Box p={4}>読み込み中...</Box>;
   }
 
   return (
@@ -93,11 +110,6 @@ const ReportDetailForm = (e) => {
           <IoReturnDownBack />
         </Button>
         <Flex space-x-4>
-          {/*
-          // 2025/6の時点では未実装。ゆくゆくは実装したい。
-          <Button sx={styledButtonStyles}>先週</Button>
-          <Button sx={styledButtonStyles}>翌週</Button>
-          */}
           {editButtonIsVisible && (
             <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
               編集
