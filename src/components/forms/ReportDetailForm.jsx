@@ -42,12 +42,14 @@ const styledEditButtonStyles = {
 
 const ReportDetailForm = (e) => {
   const [searchParams] = useSearchParams();
-  const reportId = searchParams.get('reportId');
+  const [reportId, setReportId] = useState(searchParams.get('reportId'));
   const [item, setItem] = useState(null);
 
   const navigate = useNavigate();
   const { employeeId, role, department_id } = useContext(UserContext);
   const [editButtonIsVisible, setEditButtonIsVisible] = useState(false);
+  const [previewReportId, setPreviewReportId] = useState(-1);
+  const [nextReportId, setNextReportId] = useState(-1);
 
   const onClickReturn = () => {
     navigate(-1);
@@ -55,6 +57,18 @@ const ReportDetailForm = (e) => {
 
   const onClickEdit = (e) => {
     navigate(`/reportedit?reportId=${reportId}`);
+  };
+
+  const onClickPreviewReport = (e) => {
+    setItem(null);
+    setReportId(previewReportId);
+    navigate(`/reportdetail?reportId=${previewReportId}`);
+  };
+
+  const onClickNextReport = (e) => {
+    setItem(null);
+    setReportId(nextReportId);
+    navigate(`/reportdetail?reportId=${nextReportId}`);
   };
 
   // useEffectで副作用を管理
@@ -66,8 +80,9 @@ const ReportDetailForm = (e) => {
     )
       .then((response) => response.json())
       .then((items) => {
-        if (items.length > 0 && !items.dataExists) {
-          const reportData = items[0];
+        // 取得データがある場合（データなしの場合dataExistsはfalseで返却され、データありの場合dataExistsは返却されない。）
+        if (items.dataExists == null) {
+          const reportData = items;
 
           // 権限チェック：本人、チームリーダー、総務、AMG、MGRのいずれかであるかチェックする
           const canView =
@@ -80,6 +95,18 @@ const ReportDetailForm = (e) => {
           if (!canView) {
             navigate('/error');
             return;
+          }
+
+          if (items.previewReportId == null) {
+            setPreviewReportId(-1);
+          } else {
+            setPreviewReportId(items.previewReportId);
+          }
+
+          if (items.nextReportId == null) {
+            setNextReportId(-1);
+          } else {
+            setNextReportId(items.nextReportId);
           }
 
           setItem(reportData);
@@ -110,6 +137,9 @@ const ReportDetailForm = (e) => {
           <IoReturnDownBack />
         </Button>
         <Flex space-x-4>
+          <Button sx={styledButtonStyles} isDisabled={previewReportId === -1} onClick={onClickPreviewReport}>先週</Button>
+          <Button sx={styledButtonStyles} isDisabled={nextReportId === -1} onClick={onClickNextReport}>翌週</Button> 
+
           {editButtonIsVisible && (
             <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
               編集
