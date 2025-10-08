@@ -11,6 +11,7 @@ import { ReportsPage } from './components/pages/ReportsPage';
 import Header from './components/Header';
 import { UserProvider } from './components/contexts/UserContext';
 import ErrorPage from './components/pages/ErrorPage';
+import { TeamProvider } from './components/contexts/TeamContext';
 
 const theme = extendTheme({
   styles: {
@@ -45,7 +46,9 @@ const Layout = ({ children }) => {
 
 const App = () => {
   return (
+    <TeamProvider>
     <UserProvider>
+      {/* <BrowserRouter> */}
       <ChakraProvider theme={theme}>
         <ScrollToTop />
         <Routes>
@@ -98,7 +101,9 @@ const App = () => {
           <Route path="*" element={<NotfoundPage />} />
         </Routes>
       </ChakraProvider>
+      {/* </BrowserRouter> */}
     </UserProvider>
+    </TeamProvider>
   );
 };
 
