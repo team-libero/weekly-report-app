@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Flex, Button, Text, IconButton, VStack } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { UserContext } from './contexts/UserContext';
+import { TeamContext } from './contexts/TeamContext';
 
 const Header = () => {
+  const { setSelectedTeamId, setSelectedEmployeeId } = useContext(TeamContext);
   const [showMenu, setShowMenu] = useState(false);
   const { pathname } = useLocation();
   const {
@@ -37,6 +39,8 @@ const Header = () => {
     setTeamName('');
     setEmpLname('');
     setEmpFname('');
+    setSelectedTeamId('');
+    setSelectedEmployeeId('');
 
     navigate('/');
   };
