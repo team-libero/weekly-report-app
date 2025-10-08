@@ -43,26 +43,20 @@ const EmployeeListPage = () => {
 
   return (
     <Container className="EmployeeList">
-      <Row>
+      <Row style={{ margin: '13px' }}>
         <Col>
-          <h2 style={{ margin: '13px' }}>社員一覧</h2>
+          <h2>社員一覧</h2>
         </Col>
-         <Col>
-          <thead>
-            <tr>
-              <th>チーム選択</th>
-              <td>
-                <select id="teamID" value={selectedTeamId} onChange={handleTeamChange}>
-                  {teamList.map((team) => (
-                    <option key={team.teamId} value={team.teamId}>
-                      {team.teamName}
-                    </option>
-                  ))}
-                </select>
-            </td>
-            </tr>
-          </thead>
-      </Col>
+        <Col>
+          チーム選択
+          <select id="teamID" value={selectedTeamId} onChange={handleTeamChange} style={{borderRadius: '5px',padding: '3px 10px',marginLeft: '10px'}}>
+            {teamList.map((team) => (
+              <option key={team.teamId} value={team.teamId}>
+                {team.teamName}
+              </option>
+            ))}
+          </select>
+        </Col>
       </Row>
       <Row>
         <Col>
