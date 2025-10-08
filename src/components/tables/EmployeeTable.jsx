@@ -19,6 +19,7 @@ const EmployeeTable = ({ items }) => {
                 color="white"
                 as={Link}
                 to={`/reports?employeeId=${item.employeeId}`}
+                style={{borderRadius: '5px'}}
               >
                 選択
               </Box>
