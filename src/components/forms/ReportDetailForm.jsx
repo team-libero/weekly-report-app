@@ -43,7 +43,7 @@ const styledEditButtonStyles = {
 const ReportDetailForm = (e) => {
   // リクエストパラメータから週報IDを取得
   const [searchParams] = useSearchParams();
-  const reportId = searchParams.get('reportId');
+  const [reportId, setReportId] = useState(searchParams.get('reportId'));
   const [item, setItem] = useState('');
 
   const navigate = useNavigate();
@@ -51,6 +51,8 @@ const ReportDetailForm = (e) => {
   const { employeeId } = useContext(UserContext);
 
   const [editButtonIsVisible, setEditButtonIsVisible] = useState(false);
+  const [previewReportId, setPreviewReportId] = useState(-1);
+  const [nextReportId, setNextReportId] = useState(-1);
 
   // 戻るボタン押下処理
   const onClickReturn = () => {
@@ -62,6 +64,20 @@ const ReportDetailForm = (e) => {
     navigate(`/reportedit?reportId=${reportId}`);
   };
 
+  // 先週ボタン押下処理
+  const onClickPreviewReport = (e) => {
+    setItem('');
+    setReportId(previewReportId);
+    navigate(`/reportdetail?reportId=${previewReportId}`);
+  };
+
+  // 翌週ボタン押下処理
+  const onClickNextReport = (e) => {
+    setItem('');
+    setReportId(nextReportId);
+    navigate(`/reportdetail?reportId=${nextReportId}`);
+  };
+
   if (item === '') {
     // 初期表示の場合のみAPIで週報情報を取得
     fetch(
@@ -69,13 +85,26 @@ const ReportDetailForm = (e) => {
     )
       .then((response) => response.json())
       .then((items) => {
-        if (items.length > 0 && !items.dataExists) {
-          setItem(items[0]);
+        // 取得データがある場合（データなしの場合dataExistsはfalseで返却され、データありの場合dataExistsは返却されない。）
+        if (items.dataExists == null) {
+          setItem(items);
 
-          if (employeeId === items[0].emp_id) {
+          if (employeeId === items.emp_id) {
             setEditButtonIsVisible(true);
           } else {
             setEditButtonIsVisible(false);
+          }
+
+          if (items.previewReportId == null) {
+            setPreviewReportId(-1);
+          } else {
+            setPreviewReportId(items.previewReportId);
+          }
+
+          if (items.nextReportId == null) {
+            setNextReportId(-1);
+          } else {
+            setNextReportId(items.nextReportId);
           }
         }
       })
@@ -93,11 +122,9 @@ const ReportDetailForm = (e) => {
           <IoReturnDownBack />
         </Button>
         <Flex space-x-4>
-          {/*
-          // 2025/6の時点では未実装。ゆくゆくは実装したい。
-          <Button sx={styledButtonStyles}>先週</Button>
-          <Button sx={styledButtonStyles}>翌週</Button>
-          */}
+          <Button sx={styledButtonStyles} isDisabled={previewReportId === -1} onClick={onClickPreviewReport}>先週</Button>
+          <Button sx={styledButtonStyles} isDisabled={nextReportId === -1} onClick={onClickNextReport}>翌週</Button> 
+         
           {editButtonIsVisible && (
             <Button sx={styledEditButtonStyles} onClick={onClickEdit}>
               編集
